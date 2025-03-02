@@ -53,7 +53,7 @@ setup:
 
 	## Enter repo_url.
 
-	RUN git clone https://{repo_url}.git .
+	RUN git clone https://github.com/GreepPay/landing-frontend.git .
 
 	RUN git checkout ${envs}
 
