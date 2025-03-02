@@ -115,7 +115,7 @@ deploy:
 
 	RUN mkdir ${service}/environments
 
-	COPY ./environments ${service}/environments
+	COPY environments ${service}/environments
 
 	# Install necessary tools using apk package manager
 	RUN apk update && \
