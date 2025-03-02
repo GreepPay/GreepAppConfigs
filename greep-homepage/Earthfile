@@ -126,8 +126,8 @@ deploy:
         kubectl version --client
 
 	# Step to log in to Azure
-	RUN az login --service-principal -u ${AZURE_CLIENT_ID} -p ${AZURE_CLIENT_SECRET} --tenant ${AZURE_TENANT_ID}
-
+	RUN az login --service-principal -u ${AZURE_CLIENT_ID} -p ${AZURE_CLIENT_SECRET} --tenant ${AZURE_TENANT_ID} && \
+        az account set --subscription ${AZURE_SUBSCRIPTION_ID}
 
 	# Step to activate a Kubernetes cluster
 	RUN az aks get-credentials --resource-group ${AZURE_RESOURCE_GROUP} --name ${AZURE_KUBERNETES_CLUSTER_NAME}
@@ -170,9 +170,6 @@ deploy:
 		DO rust_kubernetes_engine+SECRETS
 	END
 
-
-	## deploy namespace
-    RUN kubectl apply -f $service/environments/${envs}/namespace.yaml
 
 	# deploy resources and perform operations after deployment. Replace CRD_CONTROLLER_NAME with your deployment name
 	RUN kubectl cp $service/environments/${envs}/extras-$service $(kubectl get pod -l app=${CRD_CONTROLLER_NAME} -o jsonpath="{.items[0].metadata.name}"):/usr/src/app/configs
