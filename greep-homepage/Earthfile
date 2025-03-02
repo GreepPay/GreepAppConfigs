@@ -114,7 +114,7 @@ deploy:
 	ARG version=""
 
 
-	COPY ./environments greep-homepage/environments
+	COPY ./environments ${service}/environments
 
 	# Install necessary tools using apk package manager
 	RUN apk update && \
