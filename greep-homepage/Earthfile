@@ -110,7 +110,7 @@ deploy:
 	ARG CRD_KIND
 	ARG CRD_GROUP
 	ARG apptype='nodejs'
-	ARG service='service-name'
+	ARG service='greep-homepage'
 	ARG version=""
 
 	COPY ./environments ${service}/environments
