@@ -63,35 +63,35 @@ setup:
 
 build:
 	ARG version='0.1'
-	ARG docker_registry='drayfocus'
-	ARG service='sample'
+	ARG DOCKER_REGISTRY='drayfocus'
+	ARG service='greep-homepage'
 	ARG envs='dev,prod'
-	ARG node_env="developement"
+	ARG node_env="production"
 	ARG apptype='nodejs'
 
 	IF [ "$apptype" = "bunjs" ]
-		BUILD bunjs_docker_engine+bunjs-server --version=$version --docker_registry=$docker_registry --service=$service --node_env=$node_env
+		BUILD bunjs_docker_engine+bunjs-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service --node_env=$node_env
 	END
 
 	IF [ "$apptype" = "java" ]
-		BUILD java_docker_engine+java-server --version=$version --docker_registry=$docker_registry --service=$service
+		BUILD java_docker_engine+java-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
 	END
 
 	IF [ "$apptype" = "nodejs" ]
-		BUILD nodejs_docker_engine+nodejs-server --version=$version --docker_registry=$docker_registry --service=$service --node_env=$node_env
+		BUILD nodejs_docker_engine+nodejs-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service --node_env=$node_env
 	END
 
 	IF [ "$apptype" = "php" ]
-		BUILD php_docker_engine+fpm-server --version=$version --docker_registry=$docker_registry --service=$service
-		BUILD php_docker_engine+web-server --version=$version --docker_registry=$docker_registry --service=$service
+		BUILD php_docker_engine+fpm-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
+		BUILD php_docker_engine+web-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
 	END
 
 	IF [ "$apptype" = "python" ]
-		BUILD python_docker_engine+python-server --version=$version --docker_registry=$docker_registry --service=$service
+		BUILD python_docker_engine+python-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
 	END
 
 	IF [ "$apptype" = "rust" ]
-		BUILD rust_docker_engine+rust-server --version=$version --docker_registry=$docker_registry --service=$service
+		BUILD rust_docker_engine+rust-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
 	END
 
 
