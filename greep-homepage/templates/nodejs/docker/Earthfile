@@ -26,18 +26,11 @@ nodejs-server:
 	## Then copy our app source code into the image
 	COPY  ./app .
 
-	# Build logic
-	RUN cd Logic && npm install && cd /usr/src/app
-
-	# Build ui-component
-	RUN cd ui-components && npm install && cd /usr/src/app
-
 	# build app
 	RUN cd app && npm install && npm run build && cd ..
 
 	# build server
 	RUN cd server && npm install && cd ..
-
 
 	EXPOSE 8080
 	CMD [ "node", "server/src/server.js" ]

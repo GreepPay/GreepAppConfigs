@@ -19,7 +19,7 @@ spec:
   environment: '${env}'
   deploymentReplicas: 1
   imageVersion: '${version}'
-  letEncryptEmail: 'drayfocus@gmail.com'
+  letEncryptEmail: 'ray@greeo.io'
   configsToUse: 'node-with-config,cert-manager-http,cert-manager-http/issuer-1'
   httpsDomain1: '${httpsDomain1}'
 "
