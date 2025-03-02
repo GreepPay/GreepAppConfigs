@@ -19,7 +19,7 @@ spec:
   environment: '${env}'
   deploymentReplicas: 1
   imageVersion: '${version}'
-  letEncryptEmail: 'ray@greeo.io'
+  letEncryptEmail: 'ray@greep.io'
   configsToUse: 'node-with-config,cert-manager-http,cert-manager-http/issuer-lets-encrypt-1'
   httpsDomain1: '${httpsDomain1}'
 "
