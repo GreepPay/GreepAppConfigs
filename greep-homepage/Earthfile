@@ -113,9 +113,8 @@ deploy:
 	ARG service='greep-homepage'
 	ARG version=""
 
-	RUN mkdir ${service}/environments
 
-	COPY environments ${service}/environments
+	COPY ./environments greep-homepage/environments
 
 	# Install necessary tools using apk package manager
 	RUN apk update && \
