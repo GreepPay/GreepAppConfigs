@@ -1,0 +1,84 @@
+VERSION 0.6
+FROM bash:4.4
+WORKDIR /setup-arena
+
+
+node-js-base:
+	FROM node:18.16.0-alpine
+
+	SAVE ARTIFACT  /usr /usr
+
+bunjs-server:
+	# We need an nginx container which can pass requests to our nodejs container,
+	# as well as serve any static content.
+	FROM nginx:alpine
+
+	# Install nvm with node and npm
+	COPY +node-js-base/usr /usr/
+	RUN apk --no-cache add ca-certificates wget
+	RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+	RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-2.28-r0.apk
+	RUN apk add --no-cache --force-overwrite glibc-2.28-r0.apk
+
+	# Install bun.js
+	RUN npm install -g bun
+
+	ARG version='0.1'
+	ARG docker_registry='drayfocus/earthly-sample'
+	ARG service='sample'
+
+	# Create app directory
+	WORKDIR /usr/src/app
+
+	## Then copy our app source code into the image
+	COPY  ./app .
+
+	# Install bun packages
+	RUN bun install
+
+	EXPOSE 8080
+	CMD [ "bun", "run", "index.ts" ]
+
+	# We need to add our NGINX template to the container for startup,
+	# and configuration.
+	COPY ./conf/nginx.conf /etc/nginx/templates/default.conf.template
+
+	SAVE IMAGE --push ${docker_registry}/${service}_web_server:v${version}
+
+
+websocket:
+	# We need an nginx container which can pass requests to our nodejs container,
+	# as well as serve any static content.
+	FROM nginx:alpine
+
+	# Install nvm with node and npm
+	COPY +node-js-base/usr /usr/
+	RUN apk --no-cache add ca-certificates wget
+	RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+	RUN wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-2.28-r0.apk
+	RUN apk add --no-cache --force-overwrite glibc-2.28-r0.apk
+
+	# Install bun.js
+	RUN npm install -g bun
+
+	ARG version='0.1'
+	ARG docker_registry='drayfocus/earthly-sample'
+	ARG service='sample'
+
+	# Create app directory
+	WORKDIR /usr/src/app
+
+	## Then copy our app source code into the image
+	COPY  ./app .
+
+	# Install bun packages
+	RUN bun install
+
+	EXPOSE 6001
+	CMD [ "bun", "run", "index.ts" ]
+
+	# We need to add our NGINX template to the container for startup,
+	# and configuration.
+	COPY ./conf/nginx.conf /etc/nginx/templates/default.conf.template
+
+	SAVE IMAGE --push ${docker_registry}/${service}_websocket_server:v${version}

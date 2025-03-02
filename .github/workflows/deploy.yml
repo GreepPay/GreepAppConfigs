@@ -1,0 +1,25 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: "${{ secrets.SSH_HOST }}"
+          username: "${{ secrets.SSH_USER }}"
+          key: "${{ secrets.SSH_PRIVATE_KEY }}"
+          script: |
+            cd ~/GreepAppConfigs
+            git pull --no-edit
