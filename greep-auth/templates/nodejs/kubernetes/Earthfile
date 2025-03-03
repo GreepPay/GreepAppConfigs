@@ -8,6 +8,7 @@ NODEJSAPP:
     ARG file="$dir/app-template.yaml"
 	ARG version=0.1
 	ARG httpsDomain1=''
+	ARG httpsDomain2=''
 	ARG CRD_KIND='CustomAppTemplate'
 	ARG CRD_GROUP='app.resourcegroup.io'
 	ARG OUTPUT="apiVersion: ${CRD_GROUP}/v1
@@ -19,9 +20,10 @@ spec:
   environment: '${env}'
   deploymentReplicas: 1
   imageVersion: '${version}'
-  letEncryptEmail: 'ray@greep.io'
-  configsToUse: 'node-with-config,cert-manager-http,cert-manager-http/issuer-1'
+  letEncryptEmail: 'drayfocus@gmail.com'
+  configsToUse: 'node-with-config'
   httpsDomain1: '${httpsDomain1}'
+  httpsDomain2: '${httpsDomain2}'
 "
 	RUN mkdir -p $dir
     RUN echo "$OUTPUT" > "$file"

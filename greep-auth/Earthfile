@@ -19,7 +19,7 @@ install:
 	ARG envs='dev,prod'
 	ARG version='0.1'
 	ARG docker_registry='drayfocus/earthly-sample'
-	ARG apptype='nodejs'
+	ARG apptype='bunjs'
 
 	WORKDIR /setup-arena
 
@@ -33,6 +33,8 @@ install:
 		RUN echo "Creating environment $env"
 
 		RUN mkdir -p $dir $dir/extras-$service
+		# Add gitkeep file
+		RUN touch $dir/extras-$service/gitkeep
 	END
 
 	SAVE ARTIFACT $service AS LOCAL ${service}
@@ -53,7 +55,7 @@ setup:
 
 	## Enter repo_url.
 
-	RUN git clone https://{repo_url}.git .
+	RUN git clone https://github.com/GreepPay/auth-service.git .
 
 	RUN git checkout ${envs}
 
@@ -63,35 +65,35 @@ setup:
 
 build:
 	ARG version='0.1'
-	ARG docker_registry='drayfocus'
+	ARG DOCKER_REGISTRY='drayfocus'
 	ARG service='sample'
 	ARG envs='dev,prod'
-	ARG node_env="developement"
+	ARG node_env="production"
 	ARG apptype='bunjs'
 
 	IF [ "$apptype" = "bunjs" ]
-		BUILD bunjs_docker_engine+bunjs-server --version=$version --docker_registry=$docker_registry --service=$service --node_env=$node_env
+		BUILD bunjs_docker_engine+bunjs-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service --node_env=$node_env
 	END
 
 	IF [ "$apptype" = "java" ]
-		BUILD java_docker_engine+java-server --version=$version --docker_registry=$docker_registry --service=$service
+		BUILD java_docker_engine+java-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
 	END
 
 	IF [ "$apptype" = "nodejs" ]
-		BUILD nodejs_docker_engine+nodejs-server --version=$version --docker_registry=$docker_registry --service=$service --node_env=$node_env
+		BUILD nodejs_docker_engine+nodejs-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service --node_env=$node_env
 	END
 
 	IF [ "$apptype" = "php" ]
-		BUILD php_docker_engine+fpm-server --version=$version --docker_registry=$docker_registry --service=$service
-		BUILD php_docker_engine+web-server --version=$version --docker_registry=$docker_registry --service=$service
+		BUILD php_docker_engine+fpm-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
+		BUILD php_docker_engine+web-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
 	END
 
 	IF [ "$apptype" = "python" ]
-		BUILD python_docker_engine+python-server --version=$version --docker_registry=$docker_registry --service=$service
+		BUILD python_docker_engine+python-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
 	END
 
 	IF [ "$apptype" = "rust" ]
-		BUILD rust_docker_engine+rust-server --version=$version --docker_registry=$docker_registry --service=$service
+		BUILD rust_docker_engine+rust-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
 	END
 
 
@@ -113,7 +115,7 @@ deploy:
 	ARG service='service-name'
 	ARG version=""
 
-	COPY ./environments ${service}/environments
+	RUN mkdir -p ${service}/environments
 
 	# Remove .gitkeep file if it exists
 	RUN rm -f ${service}/environments/gitkeep
@@ -169,9 +171,8 @@ deploy:
 	IF [ "$apptype" = "rust" ]
 		DO rust_kubernetes_engine+RUSTAPP --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1
 		DO rust_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs
-		DO rust_kubernetes_engine+SECRETS --service=$service  --env=$envs
+		DO rust_kubernetes_engine+SECRETS --service=$service --env=$envs
 	END
-
 
 
 	# deploy resources and perform operations after deployment. Replace CRD_CONTROLLER_NAME with your deployment name
@@ -183,4 +184,4 @@ deploy:
 	RUN sleep 20s
 
 	# Run post-deployment actions below. Example below.
-	# RUN kubectl exec -n ${envs}-${service} deploy/${service}-fpm  -- echo "Post deployment actions completed"
+	RUN kubectl exec -n ${envs}-${service} deploy/${service}-webserver  -- bun run migrate:db

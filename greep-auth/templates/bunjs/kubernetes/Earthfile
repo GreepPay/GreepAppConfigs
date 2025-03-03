@@ -7,7 +7,6 @@ BUNJSAPP:
     ARG dir="./$service/environments/$env"
     ARG file="$dir/app-template.yaml"
 	ARG version=0.1
-	ARG httpsDomain1=''
 	ARG CRD_KIND='CustomAppTemplate'
 	ARG CRD_GROUP='app.resourcegroup.io'
 	ARG OUTPUT="apiVersion: ${CRD_GROUP}/v1
@@ -19,7 +18,7 @@ spec:
   environment: '${env}'
   deploymentReplicas: 1
   imageVersion: '${version}'
-  letEncryptEmail: 'drayfocus@gmail.com'
+  letEncryptEmail: 'ray@greep.io'
   configsToUse: 'node-with-config'
 "
 	RUN mkdir -p $dir
@@ -51,6 +50,9 @@ SECRETS:
     ARG env='prod'
     ARG dirExtra="./$service/environments/$env/extras-$service"
     ARG file="$dirExtra/secrets.yaml"
+    ARG DB_USER='user'
+    ARG DB_PASSWORD='password'
+    ARG DB_HOST='localhost'
 	ARG OUTPUT="apiVersion: v1
 kind: Secret
 metadata:
@@ -58,9 +60,11 @@ metadata:
   namespace: ${env}-${service}
 type: Opaque
 stringData:
-  APP_KEY: ''
-  DB_USERNAME: ''
-  DB_PASSWORD: ''
+   DB_USER: '$DB_USER'
+   DB_PASSWORD: '$DB_PASSWORD'
+   DB_DATABASE: '$service-${env}'
+   DB_HOST: '$DB_HOST'
+   DB_USE_SSL: 'true'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"
