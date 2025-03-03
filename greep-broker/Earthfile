@@ -66,7 +66,7 @@ setup:
 build:
 	ARG version='0.1'
 	ARG DOCKER_REGISTRY='drayfocus'
-	ARG service='sample'
+	ARG service='greep-broker'
 	ARG envs='dev,prod'
 	ARG node_env="production"
 	ARG apptype='nodejs'
@@ -113,7 +113,7 @@ deploy:
 	ARG CRD_GROUP
 	ARG SERVICE_BROKER_SECRET_KEY
 	ARG apptype='nodejs'
-	ARG service='service-name'
+	ARG service='greep-broker'
 	ARG version=""
 
 	RUN mkdir -p ${service}/environments
