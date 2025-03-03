@@ -60,7 +60,7 @@ metadata:
   namespace: ${env}-${service}
 type: Opaque
 stringData:
-  BROKER_SECRET_KEY: "${SERVICE_BROKER_SECRET_KEY}"
+  BROKER_SECRET_KEY: '${SERVICE_BROKER_SECRET_KEY}'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"
