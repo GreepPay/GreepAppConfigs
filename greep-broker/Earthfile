@@ -111,6 +111,7 @@ deploy:
 	ARG CRD_CONTROLLER_NAME
 	ARG CRD_KIND
 	ARG CRD_GROUP
+	ARG SERVICE_BROKER_SECRET_KEY
 	ARG apptype='nodejs'
 	ARG service='service-name'
 	ARG version=""
@@ -155,13 +156,13 @@ deploy:
 		IF [ "$envs" = "dev" ]
 		    DO nodejs_kubernetes_engine+NODEJSAPP --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1 --httpsDomain1=service-broker.greep.io
     		DO nodejs_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs
-    		DO nodejs_kubernetes_engine+SECRETS --service=$service  --env=$envs
+    		DO nodejs_kubernetes_engine+SECRETS --service=$service  --env=$envs --SERVICE_BROKER_SECRET_KEY=$SERVICE_BROKER_SECRET_KEY
 		END
 
 		IF [ "$envs" = "prod" ]
 		    DO nodejs_kubernetes_engine+NODEJSAPP --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1
     		DO nodejs_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs
-    		DO nodejs_kubernetes_engine+SECRETS --service=$service  --env=$envs
+    		DO nodejs_kubernetes_engine+SECRETS --service=$service  --env=$envs --SERVICE_BROKER_SECRET_KEY=$SERVICE_BROKER_SECRET_KEY
 		END
 
 
