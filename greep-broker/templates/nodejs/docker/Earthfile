@@ -1,0 +1,39 @@
+VERSION 0.6
+FROM bash:4.4
+WORKDIR /setup-arena
+
+node-js-base:
+	FROM node:18.16.0-alpine
+
+	SAVE ARTIFACT  /usr /usr
+
+nodejs-server:
+	# We need an nginx container which can pass requests to our nodejs container,
+	# as well as serve any static content.
+	FROM nginx:alpine
+
+	# Install nvm with node and npm
+
+	COPY +node-js-base/usr /usr/
+
+	ARG version='0.1'
+	ARG docker_registry='drayfocus/earthly-sample'
+	ARG service='sample'
+
+	# Create app directory
+	WORKDIR /usr/src/app
+
+	## Then copy our app source code into the image
+	COPY  ./app .
+
+	# build server
+	RUN npm install
+
+	EXPOSE 8080
+	CMD [ "node", "src/server.js" ]
+
+	# We need to add our NGINX template to the container for startup,
+	# and configuration.
+	COPY ./conf/nginx.conf /etc/nginx/templates/default.conf.template
+
+	SAVE IMAGE --push ${docker_registry}/${service}_web_server:v${version}
