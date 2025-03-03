@@ -23,17 +23,16 @@ bunjs-server:
     ENV NODE_VERSION="lts/*"
 
     # Install NVM
-    RUN curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash && \
-        source $NVM_DIR/nvm.sh && \
-        nvm install $NODE_VERSION && \
-        nvm use $NODE_VERSION && \
-        nvm alias default $NODE_VERSION
+    RUN curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
 
-    # Ensure Node, npm, and npx are accessible
-    ENV PATH="$NVM_DIR/versions/node/$(ls $NVM_DIR/versions/node)/bin:$PATH"
+    # Install Node.js using NVM
+    RUN bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use $NODE_VERSION && nvm alias default $NODE_VERSION"
+
+    # Ensure Node.js is available in all sessions
+    ENV PATH="$NVM_DIR/versions/node/$(bash -c 'source $NVM_DIR/nvm.sh && nvm version $NODE_VERSION')/bin:$PATH"
 
     # Verify installation
-    RUN node -v && npm -v && npx -v
+    RUN bash -c "source $NVM_DIR/nvm.sh && node -v && npm -v && npx -v"
 
 	# Install bun.js
 	RUN npm install -g bun
