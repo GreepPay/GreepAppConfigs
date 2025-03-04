@@ -43,7 +43,7 @@ setup:
 
 	ARG envs='dev'
 
-	ARG apptype='nodejs'
+	ARG apptype='bunjs'
 
 	RUN mkdir app
 
