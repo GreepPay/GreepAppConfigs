@@ -1,0 +1,62 @@
+VERSION 0.6
+
+rocket-build:
+    FROM rust:1.78-slim
+
+    ARG service='sample'
+
+    WORKDIR /usr/src/app
+
+	# Install necessary dependencies, including pkg-config and OpenSSL development files
+    RUN apt-get update && apt-get install -y \
+        pkg-config \
+        libssl-dev \
+        && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+    # Copy the source code into the build environment
+    COPY ./app .
+
+    # Set the target environment for Rocket
+    ENV ROCKET_ENV=production
+
+    # Compile the application with optimizations
+    RUN cargo build --release
+
+    # Save the resulting binary as an artifact
+    SAVE ARTIFACT target/release AS LOCAL release
+
+rust-server:
+    FROM rust:1.78-slim
+
+    ARG version='0.1'
+    ARG docker_registry='drayfocus/earthly-sample'
+    ARG service='sample'
+
+    # Set up minimal environment for running the app
+    WORKDIR /usr/src/app
+
+    COPY ./app .
+
+	# Install OpenSSL runtime libraries
+   	RUN apt-get update && apt-get install -y \
+        pkg-config \
+        libssl-dev \
+        && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+
+    # Use the binary artifact produced in the build stage
+    COPY +rocket-build/release/app /usr/local/bin/app
+
+    # Set Rocket's runtime environment variables
+    ENV ROCKET_PORT=8080
+    ENV ROCKET_ADDRESS="0.0.0.0"
+    ENV ROCKET_ENV=production
+
+    # Expose the application's port
+    EXPOSE 8080
+
+    # Run the compiled binary directly and the puppeteer server in parallel
+    CMD sh -c "/usr/local/bin/app"
+
+    # Save the final image to the registry
+    SAVE IMAGE --push ${docker_registry}/${service}_web_server:v${version}
