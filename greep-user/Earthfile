@@ -19,7 +19,7 @@ install:
 	ARG envs='dev,prod'
 	ARG version='0.1'
 	ARG docker_registry='drayfocus/earthly-sample'
-	ARG apptype='nodejs'
+	ARG apptype='bunjs'
 
 	WORKDIR /setup-arena
 
@@ -43,7 +43,7 @@ setup:
 
 	ARG envs='dev'
 
-	ARG apptype='nodejs'
+	ARG apptype='bunjs'
 
 	RUN mkdir app
 
@@ -55,7 +55,7 @@ setup:
 
 	## Enter repo_url.
 
-	RUN git clone https://{repo_url}.git .
+	RUN git clone https://github.com/GreepPay/user-service.git .
 
 	RUN git checkout ${envs}
 
@@ -69,7 +69,7 @@ build:
 	ARG service='sample'
 	ARG envs='dev,prod'
 	ARG node_env="production"
-	ARG apptype='nodejs'
+	ARG apptype='bunjs'
 
 	IF [ "$apptype" = "bunjs" ]
 		BUILD bunjs_docker_engine+bunjs-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service --node_env=$node_env
@@ -111,7 +111,10 @@ deploy:
 	ARG CRD_CONTROLLER_NAME
 	ARG CRD_KIND
 	ARG CRD_GROUP
-	ARG apptype='nodejs'
+	ARG DB_USER
+	ARG DB_PASSWORD
+	ARG DB_HOST
+	ARG apptype='bunjs'
 	ARG service='service-name'
 	ARG version=""
 
@@ -139,9 +142,17 @@ deploy:
 	## Update deployment.yaml, configmap and secrets with latest versions
 
 	IF [ "$apptype" = "bunjs" ]
-		DO bunjs_kubernetes_engine+BUNJSAPP  --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1
+	    IF [ "$envs" = "dev" ]
+			DO bunjs_kubernetes_engine+BUNJSAPP  --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1
+		END
+
+		IF [ "$envs" = "prod" ]
+			DO bunjs_kubernetes_engine+BUNJSAPP  --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1
+		END
+
 		DO bunjs_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs
-		DO bunjs_kubernetes_engine+SECRETS --service=$service  --env=$envs
+		DO bunjs_kubernetes_engine+SECRETS --service=$service  --env=$envs --DB_USER=$DB_USER  --DB_PASSWORD=$DB_PASSWORD --DB_HOST=$DB_HOST
+
 	END
 
 	IF [ "$apptype" = "java" ]
@@ -184,4 +195,4 @@ deploy:
 	RUN sleep 20s
 
 	# Run post-deployment actions below. Example below.
-	# RUN kubectl exec -n ${envs}-${service} deploy/${service}-fpm  -- echo "Post deployment actions completed"
+	RUN kubectl exec -n ${envs}-${service} deploy/${service}-webserver  -- bun run migrate:db
