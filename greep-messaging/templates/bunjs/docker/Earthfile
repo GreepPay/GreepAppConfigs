@@ -33,7 +33,7 @@ bunjs-server:
 	SAVE IMAGE --push ${docker_registry}/${service}_web_server:v${version}
 
 websocket:
-FROM oven/bun:1.0.5-alpine
+    FROM oven/bun:1.0.5-alpine
 
 	ARG version='0.1'
 	ARG docker_registry='drayfocus/earthly-sample'
