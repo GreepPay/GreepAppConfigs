@@ -1,0 +1,78 @@
+VERSION 0.6
+
+RUSTAPP:
+	COMMAND
+    ARG service='sample'
+    ARG env='prod'
+    ARG dir="./$service/environments/$env"
+    ARG file="$dir/app-template.yaml"
+    ARG version=0.1
+    ARG deploymentReplicas=1
+    ARG CRD_KIND='CustomAppTemplate'
+	ARG CRD_GROUP='app.resourcegroup.io'
+    ARG OUTPUT="apiVersion: ${CRD_GROUP}/v1
+kind: ${CRD_KIND}
+metadata:
+  name: ${service}
+spec:
+  serviceName: '${service}'
+  environment: '${env}'
+  deploymentReplicas: ${deploymentReplicas}
+  imageVersion: '${version}'
+  letEncryptEmail: 'ray@greep.io'
+  configsToUse: 'rust-default'
+"
+	RUN mkdir -p $dir
+  RUN echo "$OUTPUT" > "$file"
+
+CONFIGMAP:
+	COMMAND
+    ARG service='sample'
+    ARG env='prod'
+    ARG dirExtra="./$service/environments/$env/extras-$service"
+    ARG file="$dirExtra/configmap.yaml"
+	ARG OUTPUT="apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${service}
+  namespace: ${env}-${service}
+data:
+  APP_NAME: 'App name'
+  APP_ENV: 'production'
+  APP_DEBUG: 'false'
+"
+	RUN mkdir -p $dirExtra
+  RUN echo "$OUTPUT" > "$file"
+
+SECRETS:
+	COMMAND
+    ARG service='sample'
+    ARG env='prod'
+    ARG dirExtra="./$service/environments/$env/extras-$service"
+    ARG file="$dirExtra/secrets.yaml"
+    ARG DB_URL
+    ARG ISSUER_SECRET_KEY
+    ARG ISSUER_PUBLIC_KEY
+    ARG RECEIVER_SECRET_KEY
+    ARG RECEIVER_PUBLIC_KEY
+    ARG ENCRYPTION_KEY
+    ARG ENCRYPTION_IV
+    ARG CHAIN_ENVIRONMENT
+	ARG OUTPUT="apiVersion: v1
+kind: Secret
+metadata:
+  name: ${service}
+  namespace: ${env}-${service}
+type: Opaque
+stringData:
+  DATABASE_URL: '$DB_URL$service-${env}?sslmode=verify-full&sslcert=/usr/src/app/models/certs/ca-certificate.crt'
+  ISSUER_SECRET_KEY: '$ISSUER_SECRET_KEY'
+  ISSUER_PUBLIC_KEY: '$ISSUER_PUBLIC_KEY'
+  RECEIVER_SECRET_KEY: '$RECEIVER_SECRET_KEY'
+  RECEIVER_PUBLIC_KEY: '$RECEIVER_PUBLIC_KEY'
+  ENCRYPTION_KEY: '$ENCRYPTION_KEY'
+  ENCRYPTION_IV: '$ENCRYPTION_IV'
+  CHAIN_ENVIRONMENT: '$CHAIN_ENVIRONMENT'
+"
+	RUN mkdir -p $dirExtra
+  RUN echo "$OUTPUT" > "$file"
