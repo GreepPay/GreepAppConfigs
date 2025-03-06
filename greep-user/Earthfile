@@ -15,11 +15,11 @@ IMPORT ./templates/rust/docker AS rust_docker_engine
 WORKDIR /build-arena
 
 install:
-	ARG service='sample'
+	ARG service='greep-user'
 	ARG envs='dev,prod'
 	ARG version='0.1'
 	ARG docker_registry='drayfocus/earthly-sample'
-	ARG apptype='nodejs'
+	ARG apptype='bunjs'
 
 	WORKDIR /setup-arena
 
@@ -66,7 +66,7 @@ setup:
 build:
 	ARG version='0.1'
 	ARG DOCKER_REGISTRY='drayfocus'
-	ARG service='sample'
+	ARG service='greep-user'
 	ARG envs='dev,prod'
 	ARG node_env="production"
 	ARG apptype='bunjs'
@@ -115,7 +115,7 @@ deploy:
 	ARG DB_PASSWORD
 	ARG DB_HOST
 	ARG apptype='bunjs'
-	ARG service='service-name'
+	ARG service='greep-user'
 	ARG version=""
 
 	RUN mkdir -p ${service}/environments
