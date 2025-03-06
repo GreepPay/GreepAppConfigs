@@ -58,9 +58,11 @@ metadata:
   namespace: ${env}-${service}
 type: Opaque
 stringData:
-  APP_KEY: ''
-  DB_USERNAME: ''
-  DB_PASSWORD: ''
+   DB_USER: '$DB_USER'
+   DB_PASSWORD: '$DB_PASSWORD'
+   DB_DATABASE: '$service-${env}'
+   DB_HOST: '$DB_HOST'
+   DB_USE_SSL: 'true'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"

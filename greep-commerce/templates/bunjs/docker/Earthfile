@@ -51,7 +51,7 @@ websocket:
 	# Install bun packages
 	RUN bun install
 
-	EXPOSE 6001
+	EXPOSE 8080
 	CMD [ "bun", "run", "index.ts" ]
 
 	# We need to add our NGINX template to the container for startup,
