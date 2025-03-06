@@ -1,13 +1,13 @@
 VERSION 0.6
 
-BUNJSAPP:
+JAVAAPP:
 	COMMAND
     ARG service='sample'
     ARG env='prod'
     ARG dir="./$service/environments/$env"
     ARG file="$dir/app-template.yaml"
 	ARG version=0.1
-	ARG httpsDomain1=''
+	ARG deploymentReplicas=1
 	ARG CRD_KIND='CustomAppTemplate'
 	ARG CRD_GROUP='app.resourcegroup.io'
 	ARG OUTPUT="apiVersion: ${CRD_GROUP}/v1
@@ -17,10 +17,9 @@ metadata:
 spec:
   serviceName: '${service}'
   environment: '${env}'
-  deploymentReplicas: 1
+  deploymentReplicas: ${deploymentReplicas}
   imageVersion: '${version}'
-  letEncryptEmail: 'drayfocus@gmail.com'
-  configsToUse: 'node-with-config'
+  configsToUse: 'java-default'
 "
 	RUN mkdir -p $dir
     RUN echo "$OUTPUT" > "$file"

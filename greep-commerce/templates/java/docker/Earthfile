@@ -1,0 +1,55 @@
+VERSION 0.6
+FROM bash:4.4
+WORKDIR /setup-arena
+
+java-server:
+	ARG docker_registry='ceedcapregistry.azurecr.io'
+	ARG service='sample'
+	ARG version='0.1'
+
+	FROM maven:3.8.4-openjdk-17-slim
+	
+	# Create app directory
+	WORKDIR /usr/src/app
+
+	## Then copy our app source code into the image
+	COPY  ./app .
+
+	# Install wget
+	RUN apt-get update && apt-get install -y wget
+
+	ENV LD_LIBRARY_PATH=/usr/src/app/java_lib:$LD_LIBRARY_PATH
+
+	# Get fxconnect java sdk from https://fxcodebase.com/bin/forexconnect/1.6.4/ForexConnectAPI-1.6.4-Linux-x86_64.tar.gz
+	# Unzip the file, then copy the folder 'lib' to a folder called 'java' and the copy the content of the 'java' folder in the 'lib' folder to the 'java' folder
+	RUN wget https://fxcodebase.com/bin/forexconnect/1.6.4/ForexConnectAPI-1.6.4-Linux-x86_64.tar.gz && \
+		mkdir java_lib && \
+		tar -xzf ForexConnectAPI-1.6.4-Linux-x86_64.tar.gz -C java_lib && \
+		cp -r java_lib/ForexConnectAPI-1.6.4-Linux-x86_64/lib/java/* java_lib/ && \
+		cp -r java_lib/ForexConnectAPI-1.6.4-Linux-x86_64/bin/* java_lib/ && \
+		mkdir lib && \
+		cp -r java_lib/ForexConnectAPI-1.6.4-Linux-x86_64/lib/* lib/ && \
+		rm -rf java_lib/ForexConnectAPI-1.6.4-Linux-x86_64 && \
+		rm ForexConnectAPI-1.6.4-Linux-x86_64.tar.gz
+
+	RUN ls -l /usr/src/app/java_lib
+
+	
+	RUN chmod +r /usr/src/app/java_lib/libForexConnect.so
+	RUN chmod +r /usr/src/app/java_lib/libfxcore2.so.1.6.4
+
+	RUN ldd /usr/src/app/java_lib/libfxcore2.so.1.6.4
+	RUN ldd /usr/src/app/java_lib/libForexConnect.so
+
+
+	# Build the application using Maven.
+	# Turn off logging during build. Completely suppresses all logging.
+	RUN mvn clean package -DskipTests -Dmaven.javadoc.skip=true -Dorg.slf4j.simpleLogger.defaultLogLevel=error -B -q
+
+	# Expose the application port
+	EXPOSE 8080
+
+	# Run the application
+	CMD ["mvn", "spring-boot:run"]
+
+	SAVE IMAGE --push ${docker_registry}/${service}_java_server:v${version}

@@ -1,6 +1,6 @@
 VERSION 0.6
 
-BUNJSAPP:
+PYTHONAPP:
 	COMMAND
     ARG service='sample'
     ARG env='prod'
@@ -20,11 +20,11 @@ spec:
   deploymentReplicas: 1
   imageVersion: '${version}'
   letEncryptEmail: 'drayfocus@gmail.com'
-  configsToUse: 'node-with-config'
+  configsToUse: 'python-default'
+  httpsDomain1: '${httpsDomain1}'
 "
 	RUN mkdir -p $dir
     RUN echo "$OUTPUT" > "$file"
-
 
 CONFIGMAP:
 	COMMAND
