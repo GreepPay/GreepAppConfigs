@@ -1,0 +1,65 @@
+VERSION 0.6
+
+JAVAAPP:
+	COMMAND
+    ARG service='sample'
+    ARG env='prod'
+    ARG dir="./$service/environments/$env"
+    ARG file="$dir/app-template.yaml"
+	ARG version=0.1
+	ARG deploymentReplicas=1
+	ARG CRD_KIND='CustomAppTemplate'
+	ARG CRD_GROUP='app.resourcegroup.io'
+	ARG OUTPUT="apiVersion: ${CRD_GROUP}/v1
+kind: ${CRD_KIND}
+metadata:
+  name: ${service}
+spec:
+  serviceName: '${service}'
+  environment: '${env}'
+  deploymentReplicas: ${deploymentReplicas}
+  imageVersion: '${version}'
+  configsToUse: 'java-default'
+"
+	RUN mkdir -p $dir
+    RUN echo "$OUTPUT" > "$file"
+
+
+CONFIGMAP:
+	COMMAND
+    ARG service='sample'
+    ARG env='prod'
+    ARG dirExtra="./$service/environments/$env/extras-$service"
+    ARG file="$dirExtra/configmap.yaml"
+	ARG OUTPUT="apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${service}
+  namespace: ${env}-${service}
+data:
+  APP_NAME: 'App name'
+  APP_ENV: 'production'
+  APP_DEBUG: 'false'
+"
+	RUN mkdir -p $dirExtra
+  RUN echo "$OUTPUT" > "$file"
+
+SECRETS:
+	COMMAND
+    ARG service='sample'
+    ARG env='prod'
+    ARG dirExtra="./$service/environments/$env/extras-$service"
+    ARG file="$dirExtra/secrets.yaml"
+	ARG OUTPUT="apiVersion: v1
+kind: Secret
+metadata:
+  name: ${service}
+  namespace: ${env}-${service}
+type: Opaque
+stringData:
+  APP_KEY: ''
+  DB_USERNAME: ''
+  DB_PASSWORD: ''
+"
+	RUN mkdir -p $dirExtra
+  RUN echo "$OUTPUT" > "$file"
