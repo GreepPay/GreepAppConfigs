@@ -32,3 +32,31 @@ bunjs-server:
 
 	SAVE IMAGE --push ${docker_registry}/${service}_web_server:v${version}
 
+websocket:
+FROM oven/bun:1.0.5-alpine
+
+	ARG version='0.1'
+	ARG docker_registry='drayfocus/earthly-sample'
+	ARG service='sample'
+
+	RUN apk add --no-cache curl bash
+
+	# Create app directory
+	WORKDIR /usr/src/app
+
+	## Then copy our app source code into the image
+	COPY  ./app .
+
+	# Install bun packages
+	RUN bun install
+
+	EXPOSE 6001
+	CMD [ "bun", "run", "index.ts" ]
+
+	# We need to add our NGINX template to the container for startup,
+	# and configuration.
+	COPY ./conf/nginx.conf /etc/nginx/templates/default.conf.template
+
+	SAVE IMAGE --push ${docker_registry}/${service}_websocket_server:v${version}
+
+
