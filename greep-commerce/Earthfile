@@ -55,7 +55,7 @@ setup:
 
 	## Enter repo_url.
 
-	RUN git clone https://github.com/GreepPay/commerce-service.git.
+	RUN git clone https://github.com/GreepPay/commerce-service.git .
 
 	RUN git checkout ${envs}
 
