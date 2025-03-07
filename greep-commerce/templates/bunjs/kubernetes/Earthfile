@@ -52,6 +52,10 @@ SECRETS:
     ARG dirExtra="./$service/environments/$env/extras-$service"
     ARG file="$dirExtra/secrets.yaml"
 	ARG OUTPUT="apiVersion: v1
+	ARG DB_USER='postgres'
+    ARG DB_PASSWORD='admin_new_password'
+    ARG DB_HOST='localhost'
+
 kind: Secret
 metadata:
   name: ${service}
