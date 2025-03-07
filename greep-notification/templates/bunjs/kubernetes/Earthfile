@@ -1,15 +1,15 @@
 VERSION 0.6
 
 BUNJSAPP:
-	COMMAND
+  COMMAND
     ARG service='sample'
     ARG env='prod'
     ARG dir="./$service/environments/$env"
     ARG file="$dir/app-template.yaml"
-	ARG version=0.1
-	ARG CRD_KIND='CustomAppTemplate'
-	ARG CRD_GROUP='app.resourcegroup.io'
-	ARG OUTPUT="apiVersion: ${CRD_GROUP}/v1
+    ARG version=0.1
+    ARG CRD_KIND='CustomAppTemplate'
+    ARG CRD_GROUP='app.resourcegroup.io'
+    ARG OUTPUT="apiVersion: ${CRD_GROUP}/v1
 kind: ${CRD_KIND}
 metadata:
   name: ${service}
@@ -21,17 +21,16 @@ spec:
   letEncryptEmail: 'ray@greep.io'
   configsToUse: 'node-with-config'
 "
-	RUN mkdir -p $dir
+    RUN mkdir -p $dir
     RUN echo "$OUTPUT" > "$file"
 
-
 CONFIGMAP:
-	COMMAND
+  COMMAND
     ARG service='sample'
     ARG env='prod'
     ARG dirExtra="./$service/environments/$env/extras-$service"
     ARG file="$dirExtra/configmap.yaml"
-	ARG OUTPUT="apiVersion: v1
+    ARG OUTPUT="apiVersion: v1
 kind: ConfigMap
 metadata:
   name: ${service}
@@ -41,11 +40,11 @@ data:
   APP_ENV: 'production'
   APP_DEBUG: 'false'
 "
-	RUN mkdir -p $dirExtra
-  RUN echo "$OUTPUT" > "$file"
+    RUN mkdir -p $dirExtra
+    RUN echo "$OUTPUT" > "$file"
 
 SECRETS:
-	COMMAND
+  COMMAND
     ARG service='sample'
     ARG env='prod'
     ARG dirExtra="./$service/environments/$env/extras-$service"
@@ -57,32 +56,32 @@ SECRETS:
     ARG FIREBASE_CLIENT_EMAIL='client_email'
     ARG FIREBASE_PRIVATE_KEY='private_key'
     ARG SMTP_HOST='host'
-	  ARG SMTP_PORT='port'
-	  ARG SMTP_SECURE='secure'
-	  ARG SMTP_USER='user'
-	  ARG SMTP_PASS='pass'
-	  ARG SMTP_FROM='from'
-	ARG OUTPUT="apiVersion: v1
+    ARG SMTP_PORT='port'
+    ARG SMTP_SECURE='secure'
+    ARG SMTP_USER='user'
+    ARG SMTP_PASS='pass'
+    ARG SMTP_FROM='from'
+    ARG OUTPUT="apiVersion: v1
 kind: Secret
 metadata:
   name: ${service}
   namespace: ${env}-${service}
 type: Opaque
 stringData:
-   DB_USER: '$DB_USER'
-   DB_PASSWORD: '$DB_PASSWORD'
-   DB_DATABASE: '$service-${env}'
-   DB_HOST: '$DB_HOST'
-   DB_USE_SSL: 'true'
-   FIREBASE_PROJECT_ID: '${FIREBASE_PROJECT_ID}'
-   FIREBASE_CLIENT_EMAIL: '${FIREBASE_CLIENT_EMAIL}'
-   FIREBASE_PRIVATE_KEY: '${FIREBASE_PRIVATE_KEY}'
-   SMTP_HOST: '${SMTP_HOST}'
-	 SMTP_PORT: '${SMTP_PORT}'
-	 SMTP_SECURE: '${SMTP_SECURE}'
-	 SMTP_USER: '${SMTP_USER}'
-	 SMTP_PASS: '${SMTP_PASS}'
-	 SMTP_FROM: '${SMTP_FROM}'
+  DB_USER: '${DB_USER}'
+  DB_PASSWORD: '${DB_PASSWORD}'
+  DB_DATABASE: '${service}-${env}'
+  DB_HOST: '${DB_HOST}'
+  DB_USE_SSL: 'true'
+  FIREBASE_PROJECT_ID: '${FIREBASE_PROJECT_ID}'
+  FIREBASE_CLIENT_EMAIL: '${FIREBASE_CLIENT_EMAIL}'
+  FIREBASE_PRIVATE_KEY: '${FIREBASE_PRIVATE_KEY}'
+  SMTP_HOST: '${SMTP_HOST}'
+  SMTP_PORT: '${SMTP_PORT}'
+  SMTP_SECURE: '${SMTP_SECURE}'
+  SMTP_USER: '${SMTP_USER}'
+  SMTP_PASS: '${SMTP_PASS}'
+  SMTP_FROM: '${SMTP_FROM}'
 "
-	RUN mkdir -p $dirExtra
-  RUN echo "$OUTPUT" > "$file"
+    RUN mkdir -p $dirExtra
+    RUN echo "$OUTPUT" > "$file"
