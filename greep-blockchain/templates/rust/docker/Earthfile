@@ -13,7 +13,15 @@ rocket-build:
         libssl-dev \
         && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-    RUN apt-get install -y libsodium-dev
+    # Install libsodium dependencies and build from source
+    RUN apt-get update && apt-get install -y wget autoconf automake libtool build-essential
+    RUN wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz
+    RUN tar -xvzf libsodium-1.0.18.tar.gz
+    RUN cd libsodium-1.0.18 \
+        && ./configure \
+        && make \
+        && make install
+    RUN ldconfig
 
     # Copy the source code into the build environment
     COPY ./app .
@@ -45,7 +53,15 @@ rust-server:
         libssl-dev \
         && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-    RUN apt-get install -y libsodium-dev
+    # Install libsodium dependencies and build from source
+    RUN apt-get update && apt-get install -y wget autoconf automake libtool build-essential
+    RUN wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz
+    RUN tar -xvzf libsodium-1.0.18.tar.gz
+    RUN cd libsodium-1.0.18 \
+        && ./configure \
+        && make \
+        && make install
+    RUN ldconfig
 
     # Use the binary artifact produced in the build stage
     COPY +rocket-build/release/app /usr/local/bin/app
