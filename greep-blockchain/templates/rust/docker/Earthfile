@@ -63,6 +63,10 @@ rust-server:
         && make install
     RUN ldconfig
 
+    RUN cargo install diesel_cli
+
+    RUN diesel --version
+
     # Use the binary artifact produced in the build stage
     COPY +rocket-build/release/app /usr/local/bin/app
 
