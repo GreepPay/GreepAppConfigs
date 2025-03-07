@@ -63,7 +63,7 @@ rust-server:
         && make install
     RUN ldconfig
 
-    RUN cargo install diesel_cli
+    RUN  cargo install diesel_cli --no-default-features --features postgres
 
     RUN diesel --version
 
