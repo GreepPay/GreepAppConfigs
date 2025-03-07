@@ -19,7 +19,7 @@ install:
 	ARG envs='dev,prod'
 	ARG version='0.1'
 	ARG docker_registry='drayfocus/earthly-sample'
-	ARG apptype='nodejs'
+	ARG apptype='bunjs'
 
 	WORKDIR /setup-arena
 
@@ -43,7 +43,7 @@ setup:
 
 	ARG envs='dev'
 
-	ARG apptype='nodejs'
+	ARG apptype='bunjs'
 
 	RUN mkdir app
 
@@ -55,7 +55,7 @@ setup:
 
 	## Enter repo_url.
 
-	RUN git clone https://github.com/GreepPay/messaging-service.git .
+	RUN git clone https://github.com/GreepPay/commerce-service.git .
 
 	RUN git checkout ${envs}
 
@@ -69,7 +69,7 @@ build:
 	ARG service='sample'
 	ARG envs='dev,prod'
 	ARG node_env="production"
-	ARG apptype='nodejs'
+	ARG apptype='bunjs'
 
 	IF [ "$apptype" = "bunjs" ]
 		BUILD bunjs_docker_engine+bunjs-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service --node_env=$node_env
