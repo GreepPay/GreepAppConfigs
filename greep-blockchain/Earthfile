@@ -196,7 +196,7 @@ deploy:
 
 	# Waiting for pods to build
 
-	RUN sleep 20s
+	RUN sleep 30s
 
 	# Run post-deployment actions below. Example below.
-	RUN kubectl exec -n ${envs}-${service} deploy/${service}-webserver  -- diesel migration run
+	RUN kubectl exec -n ${envs}-${service} deploy/${service}-webserver  -- cd models && diesel migration run
