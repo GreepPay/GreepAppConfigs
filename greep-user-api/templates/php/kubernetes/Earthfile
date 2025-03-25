@@ -53,10 +53,12 @@ data:
 	DB_CONNECTION: 'pgsql'
 	DB_HOST: '$DB_HOST'
 	DB_PORT: '5432'
+	DB_SSLMODE: 'require'
 	BROADCAST_DRIVER: 'pusher'
 	CACHE_DRIVER: 'redis'
 	FILESYSTEM_DRIVER: 'local'
 	QUEUE_CONNECTION: 'redis'
+	DB_SSLCERT: '/opt/apps/laravel-in-kubernetes/storage/certs/${env}/ca-certificate.crt'
 
 	# Microservice databases
 	DB_AUTH_DATABASE: 'greep-auth-{env}'
