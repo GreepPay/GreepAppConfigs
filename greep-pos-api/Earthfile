@@ -169,11 +169,11 @@ deploy:
 	IF [ "$apptype" = "php" ]
 
 	    IF [ "$envs" = "dev" ]
-		    DO php_kubernetes_engine+LARAVELAPP --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1 --httpsDomain1=api-client-dev.greep.io
+		    DO php_kubernetes_engine+LARAVELAPP --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1 --httpsDomain1=api-pos-dev.greep.io
 		END
 
 		IF [ "$envs" = "prod" ]
-		    DO php_kubernetes_engine+LARAVELAPP --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1 --httpsDomain1=api-client.greep.io
+		    DO php_kubernetes_engine+LARAVELAPP --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1 --httpsDomain1=api-pos-prod.greep.io
 		END
 
 		DO php_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs --DB_HOST=$DB_HOST
