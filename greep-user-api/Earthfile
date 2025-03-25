@@ -202,4 +202,4 @@ deploy:
 	RUN sleep 30s
 
 	# Run post-deployment actions below. Example below.
-	RUN kubectl exec -n ${envs}-${service} deploy/${service}-fpm  -- php artisan migrate --force
+	RUN kubectl exec -n ${envs}-${service} deploy/${service}-fpm  -- echo "Hello World"
