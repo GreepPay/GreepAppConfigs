@@ -12,7 +12,7 @@ ARG PHP_PECL_EXTS="redis"
 
 composer-base:
 	# We need to build the Composer base to reuse packages we've installed
-	FROM composer:2.1
+	FROM composer:2.2
 
 	# First, create the application directory, and some auxilary directories for scripts and such
 	RUN mkdir -p /opt/apps/laravel-in-kubernetes /opt/apps/laravel-in-kubernetes/bin
@@ -36,7 +36,7 @@ composer-base:
 	RUN mv install-php-extensions /usr/local/bin/
 	RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
     install-php-extensions imagick
-	
+
 
 	# Install ghostscript
 	RUN wget https://github.com/luvvien/resources/raw/master/ghostscript-9.22-linux-x86_64.tar.gz\
@@ -45,7 +45,7 @@ composer-base:
     && cp gs-922-linux-x86_64 /usr/local/bin/gs \
     && cp gs-922-linux-x86_64 /usr/bin/gs \
     && rm ../ghostscript-9.22-linux-x86_64.tar.gz \
-    && rm -rf ghostscript-9.22-linux-x86_64 
+    && rm -rf ghostscript-9.22-linux-x86_64
 
 	# Setup GD extension
 	RUN apk add --no-cache \
@@ -110,7 +110,7 @@ frontend:
 	ARG version='0.1'
 	ARG docker_registry='drayfocus/earthly-sample'
 	ARG service='sample'
-	
+
 	# We need to copy in the Laravel files to make everything is available to our frontend compilation
 	COPY +composer-base/opt/apps/laravel-in-kubernetes /opt/apps/laravel-in-kubernetes
 
@@ -149,7 +149,7 @@ cli:
 	RUN mv install-php-extensions /usr/local/bin/
 	RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
     install-php-extensions imagick
-	
+
 
 
 	# Install ghostscript
@@ -159,7 +159,7 @@ cli:
     && cp gs-922-linux-x86_64 /usr/local/bin/gs \
     && cp gs-922-linux-x86_64 /usr/bin/gs \
     && rm ../ghostscript-9.22-linux-x86_64.tar.gz \
-    && rm -rf ghostscript-9.22-linux-x86_64 
+    && rm -rf ghostscript-9.22-linux-x86_64
 
 
 	# Setup GD extension
@@ -218,7 +218,7 @@ fpm-server:
 	RUN mv install-php-extensions /usr/local/bin/
 	RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
     install-php-extensions imagick
-	
+
 
 
 	# Install ghostscript
@@ -228,9 +228,9 @@ fpm-server:
     && cp gs-922-linux-x86_64 /usr/local/bin/gs \
     && cp gs-922-linux-x86_64 /usr/bin/gs \
     && rm ../ghostscript-9.22-linux-x86_64.tar.gz \
-    && rm -rf ghostscript-9.22-linux-x86_64 
+    && rm -rf ghostscript-9.22-linux-x86_64
 
-	
+
 	# Setup GD extension
 	RUN apk add --no-cache \
 		freetype \
@@ -293,7 +293,7 @@ web-server:
 
 	# # Copy in ONLY the public directory of our project.
 	# # This is where all the static assets will live, which nginx will serve for us.
-	
+
 	COPY +composer-base/opt/apps/laravel-in-kubernetes/public /opt/apps/laravel-in-kubernetes/public
 
 	SAVE IMAGE --push ${docker_registry}/${service}_web_server:v${version}
