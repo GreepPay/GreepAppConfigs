@@ -129,7 +129,7 @@ cli:
 	# It contains all the Composer packages,
 	# and just the basic CLI "stuff" in order for us to run commands,
 	# be that queues, migrations, tinker etc.
-	FROM php:8.1-alpine
+	FROM php:8.2-alpine
 
 	WORKDIR /opt/apps/laravel-in-kubernetes
 
@@ -197,7 +197,7 @@ cli:
 
 fpm-server:
 	# We need a stage which contains FPM to actually run and process requests to our PHP application.
-	FROM php:8.1-fpm-alpine
+	FROM php:8.2-fpm-alpine
 
 	ARG version='0.1'
 	ARG docker_registry='drayfocus/earthly-sample'
