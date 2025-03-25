@@ -37,49 +37,49 @@ CONFIGMAP:
 	ARG OUTPUT="apiVersion: v1
 kind: ConfigMap
 metadata:
-    name: ${service}
-    namespace: ${env}-${service}
+  name: ${service}
+  namespace: ${env}-${service}
 data:
-	APP_NAME: 'Greep'
-	APP_ENV: 'local'
-	APP_DEBUG: 'true'
+  APP_NAME: 'Greep'
+  APP_ENV: 'local'
+  APP_DEBUG: 'true'
 
-	APP_URL: 'https://api-client-dev.greep.io'
-	APP_STATE: '${env}'
+  APP_URL: 'https://api-client-dev.greep.io'
+  APP_STATE: '${env}'
 
-	# Update the LOG_CHANNEL to stdout for Kubernetes
-	LOG_CHANNEL: 'stdout'
-	LOG_LEVEL: 'debug'
-	DB_CONNECTION: 'pgsql'
-	DB_HOST: '$DB_HOST'
-	DB_PORT: '5432'
-	DB_SSLMODE: 'require'
-	BROADCAST_DRIVER: 'pusher'
-	CACHE_DRIVER: 'redis'
-	FILESYSTEM_DRIVER: 'local'
-	QUEUE_CONNECTION: 'redis'
-	DB_SSLCERT: '/opt/apps/laravel-in-kubernetes/storage/certs/${env}/ca-certificate.crt'
+  # Update the LOG_CHANNEL to stdout for Kubernetes
+  LOG_CHANNEL: 'stdout'
+  LOG_LEVEL: 'debug'
+  DB_CONNECTION: 'pgsql'
+  DB_HOST: '$DB_HOST'
+  DB_PORT: '5432'
+  DB_SSLMODE: 'require'
+  BROADCAST_DRIVER: 'pusher'
+  CACHE_DRIVER: 'redis'
+  FILESYSTEM_DRIVER: 'local'
+  QUEUE_CONNECTION: 'redis'
+  DB_SSLCERT: '/opt/apps/laravel-in-kubernetes/storage/certs/${env}/ca-certificate.crt'
 
-	# Microservice databases
-	DB_AUTH_DATABASE: 'greep-auth-{env}'
-	DB_USER_DATABASE: 'greep-user-{env}'
-	DB_NOTIFICATION_DATABASE: 'greep-notification-{env}'
-	DB_WALLET_DATABASE: 'greep-wallet-{env}'
-	DB_BLOCKCHAIN_DATABASE: 'greep-blockchain-{env}'
+  # Microservice databases
+  DB_AUTH_DATABASE: 'greep-auth-{env}'
+  DB_USER_DATABASE: 'greep-user-{env}'
+  DB_NOTIFICATION_DATABASE: 'greep-notification-{env}'
+  DB_WALLET_DATABASE: 'greep-wallet-{env}'
+  DB_BLOCKCHAIN_DATABASE: 'greep-blockchain-{env}'
 
-	# Microservice URL
-	AUTH_API: 'http://greep-auth-webserver.{env}-greep-auth.svc.cluster.local:80'
-	BLOCKCHAIN_API: 'http://greep-blockchain-webserver.{env}-greep-blockchain.svc.cluster.local:80'
-	NOTIFICATION_API: 'http://greep-notification-webserver.{env}-greep-notification.svc.cluster.local:80'
-	USER_API: 'http://greep-user-webserver.{env}-greep-user.svc.cluster.local:80'
-	WALLET_API: 'http://greep-wallet-webserver.{env}-greep-wallet.svc.cluster.local:80'
+  # Microservice URL
+  AUTH_API: 'http://greep-auth-webserver.{env}-greep-auth.svc.cluster.local:80'
+  BLOCKCHAIN_API: 'http://greep-blockchain-webserver.{env}-greep-blockchain.svc.cluster.local:80'
+  NOTIFICATION_API: 'http://greep-notification-webserver.{env}-greep-notification.svc.cluster.local:80'
+  USER_API: 'http://greep-user-webserver.{env}-greep-user.svc.cluster.local:80'
+  WALLET_API: 'http://greep-wallet-webserver.{env}-greep-wallet.svc.cluster.local:80'
 
-	MEMCACHED_HOST: 'memcached'
-	REDIS_HOST:  'greep-user-api-redis.{env}-greep-user-api.svc.cluster.local'
-	REDIS_PORT: '6379'
+  MEMCACHED_HOST: 'memcached'
+  REDIS_HOST:  'greep-user-api-redis.{env}-greep-user-api.svc.cluster.local'
+  REDIS_PORT: '6379'
 
-	LIGHTHOUSE_CACHE_ENABLE: 'true'
-	GRAPHIQL_ENABLED: 'true'
+  LIGHTHOUSE_CACHE_ENABLE: 'true'
+  GRAPHIQL_ENABLED: 'true'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"
