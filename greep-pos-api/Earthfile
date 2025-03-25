@@ -43,7 +43,7 @@ setup:
 
 	ARG envs='dev'
 
-	ARG apptype='nodejs'
+	ARG apptype='php'
 
 	RUN mkdir app
 
@@ -55,7 +55,7 @@ setup:
 
 	## Enter repo_url.
 
-	RUN git clone https://{repo_url}.git .
+	RUN git clone https://github.com/GreepPay/pos-api-gateway.git .
 
 	RUN git checkout ${envs}
 
@@ -69,7 +69,7 @@ build:
 	ARG service='sample'
 	ARG envs='dev,prod'
 	ARG node_env="production"
-	ARG apptype='nodejs'
+	ARG apptype='php'
 
 	IF [ "$apptype" = "bunjs" ]
 		BUILD bunjs_docker_engine+bunjs-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service --node_env=$node_env
@@ -111,8 +111,18 @@ deploy:
 	ARG CRD_CONTROLLER_NAME
 	ARG CRD_KIND
 	ARG CRD_GROUP
-	ARG apptype='nodejs'
-	ARG service='service-name'
+	ARG DB_HOST
+	ARG DB_PORT
+	ARG DB_USER
+	ARG DB_PASSWORD
+	ARG AZURE_STORAGE_KEY
+	ARG AZURE_STORAGE_NAME
+	ARG AZURE_STORAGE_CONTAINER
+	ARG AZURE_STORAGE_URL
+	ARG AZURE_STORAGE_CONNECTION_STRING
+	ARG APP_KEY
+	ARG apptype='php'
+	ARG service='greep-pos-api'
 	ARG version=""
 
 	RUN mkdir -p ${service}/environments
@@ -157,9 +167,17 @@ deploy:
 	END
 
 	IF [ "$apptype" = "php" ]
-		DO php_kubernetes_engine+LARAVELAPP --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1
-		DO php_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs
-		DO php_kubernetes_engine+SECRETS --service=$service  --env=$envs
+
+	    IF [ "$envs" = "dev" ]
+		    DO php_kubernetes_engine+LARAVELAPP --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1 --httpsDomain1=api-client-dev.greep.io
+		END
+
+		IF [ "$envs" = "prod" ]
+		    DO php_kubernetes_engine+LARAVELAPP --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1 --httpsDomain1=api-client.greep.io
+		END
+
+		DO php_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs --DB_HOST=$DB_HOST
+		DO php_kubernetes_engine+SECRETS --service=$service  --env=$envs --AZURE_STORAGE_KEY=$AZURE_STORAGE_KEY --AZURE_STORAGE_NAME=$AZURE_STORAGE_NAME --AZURE_STORAGE_CONTAINER=$AZURE_STORAGE_CONTAINER --AZURE_STORAGE_URL=$AZURE_STORAGE_URL --AZURE_STORAGE_CONNECTION_STRING=$AZURE_STORAGE_CONNECTION_STRING --DB_USER=$DB_USER --DB_PASSWORD=$DB_PASSWORD --APP_KEY=$APP_KEY
 	END
 
 	IF [ "$apptype" = "python" ]
@@ -181,7 +199,7 @@ deploy:
 
 	# Waiting for pods to build
 
-	RUN sleep 20s
+	RUN sleep 30s
 
 	# Run post-deployment actions below. Example below.
-	# RUN kubectl exec -n ${envs}-${service} deploy/${service}-fpm  -- echo "Post deployment actions completed"
+	RUN kubectl exec -n ${envs}-${service} deploy/${service}-fpm  -- echo "Hello World"
