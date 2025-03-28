@@ -26,6 +26,7 @@ composer-base:
 		&& adduser -S composer -G composer \
 		&& chown -R composer /opt/apps/laravel-in-kubernetes \
 		&& apk add --virtual build-dependencies --no-cache ${PHPIZE_DEPS} openssl ca-certificates libxml2-dev libpq-dev oniguruma-dev \
+		&& docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
 		&& docker-php-ext-install -j$(nproc) ${PHP_EXTS} \
 		&& pecl install ${PHP_PECL_EXTS} \
 		&& docker-php-ext-enable ${PHP_PECL_EXTS} \
@@ -137,7 +138,8 @@ cli:
 	# used to compile our PHP extensions, as well as install all the extensions themselves.
 	# You can see a list of required extensions for Laravel here: https://laravel.com/docs/8.x/deployment#server-requirements
 	RUN apk add --virtual build-dependencies --no-cache ${PHPIZE_DEPS} openssl ca-certificates libxml2-dev oniguruma-dev libpq-dev && \
-		docker-php-ext-install -j$(nproc) ${PHP_EXTS} && \
+	    docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql && \
+	    docker-php-ext-install -j$(nproc) ${PHP_EXTS} && \
 		pecl install ${PHP_PECL_EXTS} && \
 		docker-php-ext-enable ${PHP_PECL_EXTS} && \
 		# apk add --upgrade php8-tokenizer && \
@@ -206,7 +208,8 @@ fpm-server:
 	WORKDIR /opt/apps/laravel-in-kubernetes
 
 	RUN apk add --virtual build-dependencies --no-cache ${PHPIZE_DEPS} openssl ca-certificates libxml2-dev oniguruma-dev libpq-dev && \
-		docker-php-ext-install -j$(nproc) ${PHP_EXTS} && \
+	    docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql && \
+	    docker-php-ext-install -j$(nproc) ${PHP_EXTS} && \
 		pecl install ${PHP_PECL_EXTS} && \
 		docker-php-ext-enable ${PHP_PECL_EXTS} && \
 		# apk add --upgrade php8-tokenizer && \
