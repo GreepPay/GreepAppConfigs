@@ -7,7 +7,7 @@ WORKDIR /setup-arena
 # as we have to install them in multiple places.
 # This helps keep ou Dockerfiles DRY -> https://bit.ly/dry-code
 # You can see a list of required extensions for Laravel here: https://laravel.com/docs/8.x/deployment#server-requirements
-ARG PHP_EXTS="bcmath ctype fileinfo mbstring pdo dom pcntl"
+ARG PHP_EXTS="bcmath ctype fileinfo mbstring pdo dom pcntl "
 ARG PHP_PECL_EXTS="redis"
 
 composer-base:
@@ -25,7 +25,7 @@ composer-base:
 	RUN addgroup -S composer \
 		&& adduser -S composer -G composer \
 		&& chown -R composer /opt/apps/laravel-in-kubernetes \
-		&& apk add --virtual build-dependencies --no-cache ${PHPIZE_DEPS} openssl ca-certificates libxml2-dev libpq-dev oniguruma-dev \
+		&& apk add --virtual build-dependencies --no-cache ${PHPIZE_DEPS} openssl ca-certificates libxml2-dev oniguruma-dev \
 		&& docker-php-ext-install -j$(nproc) ${PHP_EXTS} \
 		&& pecl install ${PHP_PECL_EXTS} \
 		&& docker-php-ext-enable ${PHP_PECL_EXTS} \
@@ -136,19 +136,23 @@ cli:
 	# We need to install some requirements into our image,
 	# used to compile our PHP extensions, as well as install all the extensions themselves.
 	# You can see a list of required extensions for Laravel here: https://laravel.com/docs/8.x/deployment#server-requirements
-	RUN apk add --virtual build-dependencies --no-cache ${PHPIZE_DEPS} openssl ca-certificates libxml2-dev oniguruma-dev libpq-dev && \
+	RUN apk add --virtual build-dependencies --no-cache ${PHPIZE_DEPS} openssl ca-certificates libxml2-dev oniguruma-dev && \
 		docker-php-ext-install -j$(nproc) ${PHP_EXTS} && \
 		pecl install ${PHP_PECL_EXTS} && \
 		docker-php-ext-enable ${PHP_PECL_EXTS} && \
 		# apk add --upgrade php8-tokenizer && \
 		apk del build-dependencies
 
-	# Install PostgreSQL dependencies for Alpine
+
+    # Install PostgreSQL dependencies and PHP extensions
     RUN apk add --no-cache \
-        php8-pdo_pgsql \
-        php8-pgsql \
-        postgresql-dev \
-        && docker-php-ext-install pdo_pgsql pgsql
+            postgresql-dev \
+            # Add other dependencies you might need
+            autoconf \
+            gcc \
+            g++ \
+            make \
+        && docker-php-ext-install pdo pdo_pgsql
 
 
 	# #  Install Imagick for PDF to Image coversion
@@ -212,19 +216,12 @@ fpm-server:
 
 	WORKDIR /opt/apps/laravel-in-kubernetes
 
-	RUN apk add --virtual build-dependencies --no-cache ${PHPIZE_DEPS} openssl ca-certificates libxml2-dev oniguruma-dev  && \
+	RUN apk add --virtual build-dependencies --no-cache ${PHPIZE_DEPS} openssl ca-certificates libxml2-dev oniguruma-dev && \
 		docker-php-ext-install -j$(nproc) ${PHP_EXTS} && \
 		pecl install ${PHP_PECL_EXTS} && \
 		docker-php-ext-enable ${PHP_PECL_EXTS} && \
 		# apk add --upgrade php8-tokenizer && \
 		apk del build-dependencies
-
-	# Install PostgreSQL dependencies for Alpine
-    RUN apk add --no-cache \
-        php8-pdo_pgsql \
-        php8-pgsql \
-        postgresql-dev \
-        && docker-php-ext-install pdo_pgsql pgsql
 
 
 	# #  Install Imagick for PDF to Image coversion
@@ -233,6 +230,16 @@ fpm-server:
 	RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
     install-php-extensions imagick
 
+
+    # Install PostgreSQL dependencies and PHP extensions
+    RUN apk add --no-cache \
+            postgresql-dev \
+            # Add other dependencies you might need
+            autoconf \
+            gcc \
+            g++ \
+            make \
+        && docker-php-ext-install pdo pdo_pgsql
 
 
 	# Install ghostscript
