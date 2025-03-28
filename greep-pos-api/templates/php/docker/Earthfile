@@ -7,7 +7,7 @@ WORKDIR /setup-arena
 # as we have to install them in multiple places.
 # This helps keep ou Dockerfiles DRY -> https://bit.ly/dry-code
 # You can see a list of required extensions for Laravel here: https://laravel.com/docs/8.x/deployment#server-requirements
-ARG PHP_EXTS="bcmath ctype fileinfo mbstring pdo pdo_mysql dom pcntl pdo_pgsql"
+ARG PHP_EXTS="bcmath ctype fileinfo mbstring pdo dom pcntl"
 ARG PHP_PECL_EXTS="redis"
 
 composer-base:
@@ -143,6 +143,13 @@ cli:
 		# apk add --upgrade php8-tokenizer && \
 		apk del build-dependencies
 
+	# Install PostgreSQL dependencies for Alpine
+    RUN apk add --no-cache \
+        php8-pdo_pgsql \
+        php8-pgsql \
+        postgresql-dev \
+        && docker-php-ext-install pdo_pgsql pgsql
+
 
 	# #  Install Imagick for PDF to Image coversion
 	RUN wget https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions
@@ -205,12 +212,19 @@ fpm-server:
 
 	WORKDIR /opt/apps/laravel-in-kubernetes
 
-	RUN apk add --virtual build-dependencies --no-cache ${PHPIZE_DEPS} openssl ca-certificates libxml2-dev oniguruma-dev libpq-dev && \
+	RUN apk add --virtual build-dependencies --no-cache ${PHPIZE_DEPS} openssl ca-certificates libxml2-dev oniguruma-dev  && \
 		docker-php-ext-install -j$(nproc) ${PHP_EXTS} && \
 		pecl install ${PHP_PECL_EXTS} && \
 		docker-php-ext-enable ${PHP_PECL_EXTS} && \
 		# apk add --upgrade php8-tokenizer && \
 		apk del build-dependencies
+
+	# Install PostgreSQL dependencies for Alpine
+    RUN apk add --no-cache \
+        php8-pdo_pgsql \
+        php8-pgsql \
+        postgresql-dev \
+        && docker-php-ext-install pdo_pgsql pgsql
 
 
 	# #  Install Imagick for PDF to Image coversion
