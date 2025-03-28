@@ -7,7 +7,7 @@ WORKDIR /setup-arena
 # as we have to install them in multiple places.
 # This helps keep ou Dockerfiles DRY -> https://bit.ly/dry-code
 # You can see a list of required extensions for Laravel here: https://laravel.com/docs/8.x/deployment#server-requirements
-ARG PHP_EXTS="bcmath ctype fileinfo mbstring pdo pdo_mysql dom pcntl pdo_pgsql"
+ARG PHP_EXTS="bcmath ctype fileinfo mbstring pdo pdo_mysql dom pcntl pdo_pgsql pgsql"
 ARG PHP_PECL_EXTS="redis"
 
 composer-base:
