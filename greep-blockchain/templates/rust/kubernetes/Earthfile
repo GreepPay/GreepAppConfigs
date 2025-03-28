@@ -66,7 +66,7 @@ metadata:
   namespace: ${env}-${service}
 type: Opaque
 stringData:
-  DATABASE_URL: '$DB_URL$service-${env}?sslmode=require&sslcert=/usr/src/app/models/certs/ca-certificate.crt'
+  DATABASE_URL: '$DB_URL$service-${env}?sslmode=require&sslrootcert=/usr/src/app/models/certs/ca-certificate.crt'
   ISSUER_SECRET_KEY: '$ISSUER_SECRET_KEY'
   ISSUER_PUBLIC_KEY: '$ISSUER_PUBLIC_KEY'
   RECEIVER_SECRET_KEY: '$RECEIVER_SECRET_KEY'
