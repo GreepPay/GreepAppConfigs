@@ -59,6 +59,7 @@ SECRETS:
     ARG ENCRYPTION_IV
     ARG CHAIN_ENVIRONMENT
     ARG STELLAR_HORIZON_URL
+    ARG DB_PROXY_URL
 	ARG OUTPUT="apiVersion: v1
 kind: Secret
 metadata:
@@ -66,7 +67,7 @@ metadata:
   namespace: ${env}-${service}
 type: Opaque
 stringData:
-  DATABASE_URL: '$DB_URL$service-${env}?sslmode=require&sslcert=/usr/src/app/models/certs/ca-certificate.crt'
+  DATABASE_URL: '$DB_PROXY_URL/$service-${env}'
   ISSUER_SECRET_KEY: '$ISSUER_SECRET_KEY'
   ISSUER_PUBLIC_KEY: '$ISSUER_PUBLIC_KEY'
   RECEIVER_SECRET_KEY: '$RECEIVER_SECRET_KEY'
