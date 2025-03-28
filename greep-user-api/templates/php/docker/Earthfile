@@ -26,7 +26,6 @@ composer-base:
 		&& adduser -S composer -G composer \
 		&& chown -R composer /opt/apps/laravel-in-kubernetes \
 		&& apk add --virtual build-dependencies --no-cache ${PHPIZE_DEPS} openssl ca-certificates libxml2-dev libpq-dev oniguruma-dev \
-		&& docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
 		&& docker-php-ext-install -j$(nproc) ${PHP_EXTS} \
 		&& pecl install ${PHP_PECL_EXTS} \
 		&& docker-php-ext-enable ${PHP_PECL_EXTS} \
@@ -130,7 +129,7 @@ cli:
 	# It contains all the Composer packages,
 	# and just the basic CLI "stuff" in order for us to run commands,
 	# be that queues, migrations, tinker etc.
-	FROM php:8.2-alpine
+	FROM libeo/php:8.2-fpm-pgsql
 
 	WORKDIR /opt/apps/laravel-in-kubernetes
 
@@ -138,8 +137,7 @@ cli:
 	# used to compile our PHP extensions, as well as install all the extensions themselves.
 	# You can see a list of required extensions for Laravel here: https://laravel.com/docs/8.x/deployment#server-requirements
 	RUN apk add --virtual build-dependencies --no-cache ${PHPIZE_DEPS} openssl ca-certificates libxml2-dev oniguruma-dev libpq-dev && \
-	    docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql && \
-	    docker-php-ext-install -j$(nproc) ${PHP_EXTS} && \
+		docker-php-ext-install -j$(nproc) ${PHP_EXTS} && \
 		pecl install ${PHP_PECL_EXTS} && \
 		docker-php-ext-enable ${PHP_PECL_EXTS} && \
 		# apk add --upgrade php8-tokenizer && \
@@ -199,7 +197,7 @@ cli:
 
 fpm-server:
 	# We need a stage which contains FPM to actually run and process requests to our PHP application.
-	FROM php:8.2-fpm-alpine
+	FROM libeo/php:8.2-fpm-pgsql
 
 	ARG version='0.1'
 	ARG docker_registry='drayfocus/earthly-sample'
@@ -208,8 +206,7 @@ fpm-server:
 	WORKDIR /opt/apps/laravel-in-kubernetes
 
 	RUN apk add --virtual build-dependencies --no-cache ${PHPIZE_DEPS} openssl ca-certificates libxml2-dev oniguruma-dev libpq-dev && \
-	    docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql && \
-	    docker-php-ext-install -j$(nproc) ${PHP_EXTS} && \
+		docker-php-ext-install -j$(nproc) ${PHP_EXTS} && \
 		pecl install ${PHP_PECL_EXTS} && \
 		docker-php-ext-enable ${PHP_PECL_EXTS} && \
 		# apk add --upgrade php8-tokenizer && \
