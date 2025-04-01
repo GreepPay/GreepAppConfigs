@@ -114,6 +114,10 @@ deploy:
 	ARG DB_USER
 	ARG DB_PASSWORD
 	ARG DB_HOST
+	ARG DOJAH_SECRET_KEY
+	ARG DOJAH_APP_ID
+	ARG DOJAH_PUBLIC_KEY
+	ARG DOJAH_BASE_URL
 	ARG apptype='bunjs'
 	ARG service='greep-user'
 	ARG version=""
@@ -150,8 +154,8 @@ deploy:
 			DO bunjs_kubernetes_engine+BUNJSAPP  --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1
 		END
 
-		DO bunjs_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs --YELLOW_CARD_BASE_URL=$YELLOW_CARD_BASE_URL
-		DO bunjs_kubernetes_engine+SECRETS --service=$service  --env=$envs --DB_USER=$DB_USER  --DB_PASSWORD=$DB_PASSWORD --DB_HOST=$DB_HOST  --YELLOW_CARD_SECRET_KEY=$YELLOW_CARD_SECRET_KEY --YELLOW_CARD_API_KEY=$YELLOW_CARD_API_KEY
+		DO bunjs_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs
+		DO bunjs_kubernetes_engine+SECRETS --service=$service  --env=$envs --DB_USER=$DB_USER  --DB_PASSWORD=$DB_PASSWORD --DB_HOST=$DB_HOST --DOJAH_SECRET_KEY=$DOJAH_SECRET_KEY --DOJAH_APP_ID=$DOJAH_APP_ID --DOJAH_PUBLIC_KEY=$DOJAH_PUBLIC_KEY --DOJAH_BASE_URL=$DOJAH_BASE_URL
 	END
 
 	IF [ "$apptype" = "java" ]
