@@ -53,6 +53,10 @@ SECRETS:
     ARG DB_USER='user'
     ARG DB_PASSWORD='password'
     ARG DB_HOST='localhost'
+    ARG DOJAH_SECRET_KEY=''
+    ARG DOJAH_APP_ID=''
+    ARG DOJAH_PUBLIC_KEY=''
+    ARG DOJAH_BASE_URL=''
 	ARG OUTPUT="apiVersion: v1
 kind: Secret
 metadata:
@@ -65,6 +69,10 @@ stringData:
    DB_DATABASE: '$service-${env}'
    DB_HOST: '$DB_HOST'
    DB_USE_SSL: 'true'
+   DOJAH_SECRET_KEY: '${DOJAH_SECRET_KEY}'
+   DOJAH_APP_ID: '${DOJAH_APP_ID}'
+   DOJAH_PUBLIC_KEY: '${DOJAH_PUBLIC_KEY}'
+   DOJAH_BASE_URL: '${DOJAH_BASE_URL}'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"
