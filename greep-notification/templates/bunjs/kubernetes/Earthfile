@@ -70,7 +70,7 @@ type: Opaque
 stringData:
   DB_USER: '${DB_USER}'
   DB_PASSWORD: '${DB_PASSWORD}'
-  DB_DATABASE: '${service}-${env}'
+  DB_DATABASE: 'greep-${env}'
   DB_HOST: '${DB_HOST}'
   DB_USE_SSL: 'true'
   FIREBASE_PROJECT_ID: '${FIREBASE_PROJECT_ID}'

@@ -64,7 +64,7 @@ type: Opaque
 stringData:
     DB_USERNAME: '$DB_USER'
     DB_PASSWORD: '$DB_PASSWORD'
-    DB_DATABASE: '$service-${env}'
+    DB_DATABASE: 'greep-${env}'
     DB_HOST: '$DB_HOST'
     DB_USE_SSL: 'true'
     YELLOW_CARD_SECRET_KEY: '${YELLOW_CARD_SECRET_KEY}'
