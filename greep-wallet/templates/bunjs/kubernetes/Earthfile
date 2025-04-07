@@ -39,7 +39,7 @@ metadata:
   name: ${service}
   namespace: ${env}-${service}
 data:
-  YELLOW_CARD_BASE_URL: '{$YELLOW_CARD_BASE_URL}'
+  YELLOW_CARD_BASE_URL: '$YELLOW_CARD_BASE_URL'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"
@@ -67,8 +67,8 @@ stringData:
     DB_DATABASE: 'greep-${env}'
     DB_HOST: '$DB_HOST'
     DB_USE_SSL: 'true'
-    YELLOW_CARD_SECRET_KEY: '${YELLOW_CARD_SECRET_KEY}'
-    YELLOW_CARD_API_KEY: '${YELLOW_CARD_API_KEY}'
+    YELLOW_CARD_SECRET_KEY: '$YELLOW_CARD_SECRET_KEY'
+    YELLOW_CARD_API_KEY: '$YELLOW_CARD_API_KEY'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"
