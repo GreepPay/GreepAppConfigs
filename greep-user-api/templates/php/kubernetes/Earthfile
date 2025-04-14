@@ -61,11 +61,11 @@ data:
   DB_SSLCERT: '/opt/apps/laravel-in-kubernetes/storage/certs/${env}/ca-certificate.crt'
 
   # Microservice databases
-  DB_AUTH_DATABASE: 'greep-auth-${env}'
-  DB_USER_DATABASE: 'greep-user-${env}'
-  DB_NOTIFICATION_DATABASE: 'greep-notification-${env}'
-  DB_WALLET_DATABASE: 'greep-wallet-${env}'
-  DB_BLOCKCHAIN_DATABASE: 'greep-blockchain-${env}'
+  DB_AUTH_DATABASE: 'greep-${env}'
+  DB_USER_DATABASE: 'greep-${env}'
+  DB_NOTIFICATION_DATABASE: 'greep-${env}'
+  DB_WALLET_DATABASE: 'greep-${env}'
+  DB_BLOCKCHAIN_DATABASE: 'greep-${env}'
 
   # Microservice URL
   AUTH_API: 'http://greep-auth-webserver.${env}-greep-auth.svc.cluster.local:80'
@@ -98,6 +98,8 @@ SECRETS:
     ARG DB_USER='user'
     ARG DB_PASSWORD='password'
     ARG APP_KEY=''
+    ARG ISSUER_PUBLIC_KEY=''
+    ARG USDC_ISSUER_PUBLIC_KEY=''
 	ARG OUTPUT="apiVersion: v1
 kind: Secret
 metadata:
@@ -109,7 +111,8 @@ stringData:
   DB_USERNAME: '$DB_USER'
   DB_PASSWORD: '$DB_PASSWORD'
   REDIS_PASSWORD: "null"
-
+  ISSUER_PUBLIC_KEY: '${ISSUER_PUBLIC_KEY}'
+  USDC_ISSUER_PUBLIC_KEY: '${USDC_ISSUER_PUBLIC_KEY}'
   AZURE_STORAGE_KEY: '${AZURE_STORAGE_KEY}'
   AZURE_STORAGE_NAME:  '${AZURE_STORAGE_NAME}'
   AZURE_STORAGE_CONTAINER: '${AZURE_STORAGE_CONTAINER}'

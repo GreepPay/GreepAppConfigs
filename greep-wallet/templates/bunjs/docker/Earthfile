@@ -11,13 +11,29 @@ bunjs-server:
 	ARG docker_registry='drayfocus/earthly-sample'
 	ARG service='sample'
 
-	RUN apk add --no-cache curl bash
+	RUN apk add --no-cache curl bash nodejs npm
 
 	# Create app directory
 	WORKDIR /usr/src/app
 
 	## Then copy our app source code into the image
 	COPY  ./app .
+
+	# Setup puppeteer
+
+	# Puppeteer dependencies
+    RUN apk add --no-cache \
+        chromium \
+        su-exec \
+        supervisor \
+        freetype-dev \
+        libjpeg-turbo-dev \
+        libpng-dev \
+        bash
+
+    # Set environment variable for Puppeteer
+    ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+    ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 	# Install bun packages
 	RUN bun install

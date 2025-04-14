@@ -39,7 +39,7 @@ metadata:
   name: ${service}
   namespace: ${env}-${service}
 data:
-  YELLOW_CARD_BASE_URL: '{$YELLOW_CARD_BASE_URL}'
+  YELLOW_CARD_BASE_URL: '$YELLOW_CARD_BASE_URL'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"
@@ -54,6 +54,8 @@ SECRETS:
     ARG DB_HOST='localhost'
     ARG YELLOW_CARD_SECRET_KEY='secret_key'
     ARG YELLOW_CARD_API_KEY='api_key'
+    ARG YELLOW_CARD_BUSINESS_ID=''
+    ARG YELLOW_CARD_BUSINESS_NAME=''
     ARG file="$dirExtra/secrets.yaml"
 	ARG OUTPUT="apiVersion: v1
 kind: Secret
@@ -64,11 +66,13 @@ type: Opaque
 stringData:
     DB_USERNAME: '$DB_USER'
     DB_PASSWORD: '$DB_PASSWORD'
-    DB_DATABASE: '$service-${env}'
+    DB_DATABASE: 'greep-${env}'
     DB_HOST: '$DB_HOST'
     DB_USE_SSL: 'true'
-    YELLOW_CARD_SECRET_KEY: '${YELLOW_CARD_SECRET_KEY}'
-    YELLOW_CARD_API_KEY: '${YELLOW_CARD_API_KEY}'
+    YELLOW_CARD_SECRET_KEY: '$YELLOW_CARD_SECRET_KEY'
+    YELLOW_CARD_API_KEY: '$YELLOW_CARD_API_KEY'
+    YELLOW_CARD_BUSINESS_NAME: '$YELLOW_CARD_BUSINESS_NAME'
+    YELLOW_CARD_BUSINESS_ID: '$YELLOW_CARD_BUSINESS_ID'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"

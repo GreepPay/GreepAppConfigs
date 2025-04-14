@@ -40,6 +40,7 @@ data:
   APP_NAME: 'App name'
   APP_ENV: 'production'
   APP_DEBUG: 'false'
+  APP_STATE: '${env}'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"
@@ -53,6 +54,10 @@ SECRETS:
     ARG DB_USER='user'
     ARG DB_PASSWORD='password'
     ARG DB_HOST='localhost'
+    ARG DOJAH_SECRET_KEY=''
+    ARG DOJAH_APP_ID=''
+    ARG DOJAH_PUBLIC_KEY=''
+    ARG DOJAH_BASE_URL=''
 	ARG OUTPUT="apiVersion: v1
 kind: Secret
 metadata:
@@ -62,9 +67,13 @@ type: Opaque
 stringData:
    DB_USER: '$DB_USER'
    DB_PASSWORD: '$DB_PASSWORD'
-   DB_DATABASE: '$service-${env}'
+   DB_DATABASE: 'greep-${env}'
    DB_HOST: '$DB_HOST'
    DB_USE_SSL: 'true'
+   DOJAH_SECRET_KEY: '${DOJAH_SECRET_KEY}'
+   DOJAH_APP_ID: '${DOJAH_APP_ID}'
+   DOJAH_PUBLIC_KEY: '${DOJAH_PUBLIC_KEY}'
+   DOJAH_BASE_URL: '${DOJAH_BASE_URL}'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"

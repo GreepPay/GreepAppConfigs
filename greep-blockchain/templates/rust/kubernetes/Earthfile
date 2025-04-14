@@ -58,6 +58,7 @@ SECRETS:
     ARG ENCRYPTION_KEY
     ARG ENCRYPTION_IV
     ARG CHAIN_ENVIRONMENT
+    ARG STELLAR_HORIZON_URL
 	ARG OUTPUT="apiVersion: v1
 kind: Secret
 metadata:
@@ -65,7 +66,7 @@ metadata:
   namespace: ${env}-${service}
 type: Opaque
 stringData:
-  DATABASE_URL: '$DB_URL$service-${env}?sslmode=require&sslcert=/usr/src/app/models/certs/ca-certificate.crt'
+  DATABASE_URL: '${DB_URL}greep-${env}?sslmode=require'
   ISSUER_SECRET_KEY: '$ISSUER_SECRET_KEY'
   ISSUER_PUBLIC_KEY: '$ISSUER_PUBLIC_KEY'
   RECEIVER_SECRET_KEY: '$RECEIVER_SECRET_KEY'
@@ -73,6 +74,7 @@ stringData:
   ENCRYPTION_KEY: '$ENCRYPTION_KEY'
   ENCRYPTION_IV: '$ENCRYPTION_IV'
   CHAIN_ENVIRONMENT: '$CHAIN_ENVIRONMENT'
+  STELLAR_HORIZON_URL: '$STELLAR_HORIZON_URL'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"

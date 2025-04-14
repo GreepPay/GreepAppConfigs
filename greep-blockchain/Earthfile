@@ -119,6 +119,8 @@ deploy:
     ARG ENCRYPTION_KEY
     ARG ENCRYPTION_IV
     ARG CHAIN_ENVIRONMENT
+    ARG STELLAR_HORIZON_URL
+    ARG DB_PROXY_URL
 	ARG apptype='rust'
 	ARG service='service-name'
 	ARG version=""
@@ -186,7 +188,7 @@ deploy:
 		END
 
 		DO rust_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs
-		DO rust_kubernetes_engine+SECRETS --service=$service --env=$envs --DB_URL=$DB_URL --ISSUER_SECRET_KEY=$ISSUER_SECRET_KEY --ISSUER_PUBLIC_KEY=$ISSUER_PUBLIC_KEY --RECEIVER_SECRET_KEY=$RECEIVER_SECRET_KEY  --RECEIVER_PUBLIC_KEY=$RECEIVER_PUBLIC_KEY --ENCRYPTION_KEY=$ENCRYPTION_KEY --ENCRYPTION_IV=$ENCRYPTION_IV --CHAIN_ENVIRONMENT=$CHAIN_ENVIRONMENT
+		DO rust_kubernetes_engine+SECRETS --service=$service --env=$envs --DB_URL=$DB_URL --ISSUER_SECRET_KEY=$ISSUER_SECRET_KEY --ISSUER_PUBLIC_KEY=$ISSUER_PUBLIC_KEY --RECEIVER_SECRET_KEY=$RECEIVER_SECRET_KEY  --RECEIVER_PUBLIC_KEY=$RECEIVER_PUBLIC_KEY --ENCRYPTION_KEY=$ENCRYPTION_KEY --ENCRYPTION_IV=$ENCRYPTION_IV --CHAIN_ENVIRONMENT=$CHAIN_ENVIRONMENT --STELLAR_HORIZON_URL=$STELLAR_HORIZON_URL --DB_PROXY_URL=$DB_PROXY_URL
 	END
 
 
@@ -199,4 +201,4 @@ deploy:
 	RUN sleep 30s
 
 	# Run post-deployment actions below. Example below.
-	RUN kubectl exec -n ${envs}-${service} deploy/${service}-webserver  -- cd models && diesel migration run
+	# RUN kubectl exec -n ${envs}-${service} deploy/${service}-webserver  -- cd models && diesel migration run
