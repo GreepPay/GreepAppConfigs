@@ -86,6 +86,8 @@ build:
 	IF [ "$apptype" = "php" ]
 		BUILD php_docker_engine+fpm-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
 		BUILD php_docker_engine+web-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
+		BUILD php_docker_engine+cron --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
+		BUILD php_docker_engine+queue-worker --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
 	END
 
 	IF [ "$apptype" = "python" ]
@@ -121,6 +123,8 @@ deploy:
 	ARG AZURE_STORAGE_URL
 	ARG AZURE_STORAGE_CONNECTION_STRING
 	ARG APP_KEY
+	ARG ISSUER_PUBLIC_KEY
+	ARG USDC_ISSUER_PUBLIC_KEY
 	ARG apptype='php'
 	ARG service='greep-user-api'
 	ARG version=""
@@ -177,7 +181,7 @@ deploy:
 		END
 
 		DO php_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs --DB_HOST=$DB_HOST
-		DO php_kubernetes_engine+SECRETS --service=$service  --env=$envs --AZURE_STORAGE_KEY=$AZURE_STORAGE_KEY --AZURE_STORAGE_NAME=$AZURE_STORAGE_NAME --AZURE_STORAGE_CONTAINER=$AZURE_STORAGE_CONTAINER --AZURE_STORAGE_URL=$AZURE_STORAGE_URL --AZURE_STORAGE_CONNECTION_STRING=$AZURE_STORAGE_CONNECTION_STRING --DB_USER=$DB_USER --DB_PASSWORD=$DB_PASSWORD --APP_KEY=$APP_KEY
+		DO php_kubernetes_engine+SECRETS --service=$service  --env=$envs --AZURE_STORAGE_KEY=$AZURE_STORAGE_KEY --AZURE_STORAGE_NAME=$AZURE_STORAGE_NAME --AZURE_STORAGE_CONTAINER=$AZURE_STORAGE_CONTAINER --AZURE_STORAGE_URL=$AZURE_STORAGE_URL --AZURE_STORAGE_CONNECTION_STRING=$AZURE_STORAGE_CONNECTION_STRING --DB_USER=$DB_USER --DB_PASSWORD=$DB_PASSWORD --APP_KEY=$APP_KEY --ISSUER_PUBLIC_KEY=$ISSUER_PUBLIC_KEY --USDC_ISSUER_PUBLIC_KEY=$USDC_ISSUER_PUBLIC_KEY
 	END
 
 	IF [ "$apptype" = "python" ]
