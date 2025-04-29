@@ -7,7 +7,7 @@ WORKDIR /setup-arena
 # as we have to install them in multiple places.
 # This helps keep ou Dockerfiles DRY -> https://bit.ly/dry-code
 # You can see a list of required extensions for Laravel here: https://laravel.com/docs/8.x/deployment#server-requirements
-ARG PHP_EXTS="bcmath ctype fileinfo mbstring pdo pdo_mysql dom pcntl "
+ARG PHP_EXTS="bcmath ctype fileinfo mbstring pdo dom pcntl "
 ARG PHP_PECL_EXTS="redis"
 
 composer-base:
@@ -144,6 +144,17 @@ cli:
 		apk del build-dependencies
 
 
+    # Install PostgreSQL dependencies and PHP extensions
+    RUN apk add --no-cache \
+            postgresql-dev \
+            # Add other dependencies you might need
+            autoconf \
+            gcc \
+            g++ \
+            make \
+        && docker-php-ext-install pdo pdo_pgsql
+
+
 	# #  Install Imagick for PDF to Image coversion
 	RUN wget https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions
 	RUN mv install-php-extensions /usr/local/bin/
@@ -219,6 +230,16 @@ fpm-server:
 	RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
     install-php-extensions imagick
 
+
+    # Install PostgreSQL dependencies and PHP extensions
+    RUN apk add --no-cache \
+            postgresql-dev \
+            # Add other dependencies you might need
+            autoconf \
+            gcc \
+            g++ \
+            make \
+        && docker-php-ext-install pdo pdo_pgsql
 
 
 	# Install ghostscript
