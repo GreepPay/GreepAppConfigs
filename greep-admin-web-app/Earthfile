@@ -59,6 +59,8 @@ setup:
 
 	RUN git checkout ${envs}
 
+	RUN git submodule update --init --recursive
+
 	RUN rm -rf package-lock.json composer.lock
 
 	SAVE ARTIFACT * AS LOCAL templates/${apptype}/docker/app/
