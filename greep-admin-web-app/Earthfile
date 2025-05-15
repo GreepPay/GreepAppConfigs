@@ -55,7 +55,7 @@ setup:
 
 	## Enter repo_url.
 
-	RUN git clone https://${GREEP_GITHUB_TOKEN}@github.com/GreepPay/admin-web-app.git .
+	RUN git clone https://${GREEP_GITHUB_TOKEN}@github.com/GreepPay/admin-web-spa.git .
 
 	RUN git checkout ${envs}
 
