@@ -43,7 +43,7 @@ setup:
 
 	ARG apptype='nodejs'
 
-	ARG GITHUB_TOKEN
+	ARG GREEP_GITHUB_TOKEN
 
 	RUN mkdir app
 
@@ -55,7 +55,7 @@ setup:
 
 	## Enter repo_url.
 
-	RUN git clone https://${GITHUB_TOKEN}@github.com/GreepPay/admin-web-app.git .
+	RUN git clone https://${GREEP_GITHUB_TOKEN}@github.com/GreepPay/admin-web-app.git .
 
 	RUN git checkout ${envs}
 
