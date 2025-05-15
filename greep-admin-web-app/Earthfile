@@ -53,6 +53,10 @@ setup:
 
 	RUN apk add git
 
+	# Make all GitHub HTTPS URLs use the token
+	RUN git config --global credential.helper cache
+    RUN git config --global url."https://${GREEP_GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+
 	## Enter repo_url.
 
 	RUN git clone https://${GREEP_GITHUB_TOKEN}@github.com/GreepPay/admin-web-spa.git .
