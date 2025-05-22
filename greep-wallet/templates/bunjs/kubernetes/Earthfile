@@ -56,6 +56,7 @@ SECRETS:
     ARG YELLOW_CARD_API_KEY='api_key'
     ARG YELLOW_CARD_BUSINESS_ID=''
     ARG YELLOW_CARD_BUSINESS_NAME=''
+    AGR BRIDGE_API_KEY=''
     ARG file="$dirExtra/secrets.yaml"
 	ARG OUTPUT="apiVersion: v1
 kind: Secret
@@ -73,6 +74,7 @@ stringData:
     YELLOW_CARD_API_KEY: '$YELLOW_CARD_API_KEY'
     YELLOW_CARD_BUSINESS_NAME: '$YELLOW_CARD_BUSINESS_NAME'
     YELLOW_CARD_BUSINESS_ID: '$YELLOW_CARD_BUSINESS_ID'
+    BRIDGE_API_KEY: '$BRIDGE_API_KEY'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"
