@@ -20,7 +20,7 @@ spec:
   deploymentReplicas: 1
   imageVersion: '${version}'
   letEncryptEmail: 'ray@greep.io'
-  configsToUse: 'node-with-config'
+  configsToUse: 'node-with-config,redis'
 "
 	RUN mkdir -p $dir
     RUN echo "$OUTPUT" > "$file"
@@ -77,6 +77,8 @@ stringData:
     YELLOW_CARD_BUSINESS_ID: '$YELLOW_CARD_BUSINESS_ID'
     BRIDGE_API_KEY: '$BRIDGE_API_KEY'
     BRIDGE_BASE_URL: '$BRIDGE_BASE_URL'
+    REDIS_HOST: 'greep-wallet-redis.${env}-greep-wallet.svc.cluster.local'
+    REDIS_PORT: '6379'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"
