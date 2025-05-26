@@ -149,7 +149,7 @@ deploy:
 	END
 
 	IF [ "$apptype" = "nodejs" ]
-		DO nodejs_kubernetes_engine+NODEJSAPP --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1  --httpsDomain1=pay.greep.io --httpsDomain2=greep.io
+		DO nodejs_kubernetes_engine+NODEJSAPP --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1  --httpsDomain1=pay.greep.io --httpsDomain2=greep.io --httpsDomain3=www.greep.io
 		DO nodejs_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs
 		DO nodejs_kubernetes_engine+SECRETS --service=$service  --env=$envs
 	END
