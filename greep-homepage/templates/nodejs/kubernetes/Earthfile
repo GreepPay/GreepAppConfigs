@@ -9,6 +9,7 @@ NODEJSAPP:
 	ARG version=0.1
 	ARG httpsDomain1=''
 	ARG httpsDomain2=''
+	ARG httpsDomain3=''
 	ARG CRD_KIND='CustomAppTemplate'
 	ARG CRD_GROUP='app.resourcegroup.io'
 	ARG OUTPUT="apiVersion: ${CRD_GROUP}/v1
@@ -24,6 +25,7 @@ spec:
   configsToUse: 'node-with-config,cert-manager-http,cert-manager-http/issuer-lets-encrypt-1,cert-manager-http/issuer-lets-encrypt-2'
   httpsDomain1: '${httpsDomain1}'
   httpsDomain2: '${httpsDomain2}'
+  httpsDomain3: '${httpsDomain3}'
 "
 	RUN mkdir -p $dir
     RUN echo "$OUTPUT" > "$file"
