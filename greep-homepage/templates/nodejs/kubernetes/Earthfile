@@ -22,7 +22,7 @@ spec:
   deploymentReplicas: 1
   imageVersion: '${version}'
   letEncryptEmail: 'ray@greep.io'
-  configsToUse: 'node-with-config,cert-manager-http,cert-manager-http/issuer-lets-encrypt-1,cert-manager-http/issuer-lets-encrypt-2'
+  configsToUse: 'node-with-config,cert-manager-http,cert-manager-http/issuer-lets-encrypt-1,cert-manager-http/issuer-lets-encrypt-2,cert-manager-http/issuer-lets-encrypt-3'
   httpsDomain1: '${httpsDomain1}'
   httpsDomain2: '${httpsDomain2}'
   httpsDomain3: '${httpsDomain3}'
