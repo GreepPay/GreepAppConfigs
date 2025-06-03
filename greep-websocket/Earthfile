@@ -86,7 +86,7 @@ build:
 	IF [ "$apptype" = "php" ]
 		BUILD php_docker_engine+fpm-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
 		BUILD php_docker_engine+web-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
-		BUILD php_docker_engine+websocket-server --version=$version --docker_registry=$docker_registry --service=$service
+		BUILD php_docker_engine+websocket-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
 	END
 
 	IF [ "$apptype" = "python" ]
