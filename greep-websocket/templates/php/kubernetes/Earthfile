@@ -67,6 +67,8 @@ data:
   QUEUE_CONNECTION: 'redis'
   DB_SSLCERT: '/opt/apps/laravel-in-kubernetes/storage/certs/${env}/ca-certificate.crt'
 
+  DB_DATABASE: 'greep-${env}'
+
   # Microservice URL
   AUTH_API: 'http://greep-auth-webserver.${env}-greep-auth.svc.cluster.local:80'
 

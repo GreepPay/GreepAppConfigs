@@ -113,8 +113,12 @@ deploy:
 	ARG CRD_CONTROLLER_NAME
 	ARG CRD_KIND
 	ARG CRD_GROUP
+	ARG DB_HOST
+	ARG DB_PORT
+	ARG DB_USER
+	ARG DB_PASSWORD
 	ARG apptype='php'
-	ARG service='service-name'
+	ARG service='greep-websocket'
 	ARG version=""
 	ARG APP_KEY
 	ARG PUSHER_APP_ID=''
