@@ -59,7 +59,7 @@ setup:
 
 	RUN git checkout ${envs}
 
-	RUN rm -rf package-lock.json composer.lock
+	RUN rm -rf bun.lock
 
 	SAVE ARTIFACT * AS LOCAL templates/${apptype}/docker/app/
 
