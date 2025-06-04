@@ -22,7 +22,7 @@ bunjs-server:
 	# Install bun packages
 	RUN bun install
 
-	env APP_STATE=test
+	ENV APP_STATE=test
 
 	# Run unit tests
 	RUN bun test
