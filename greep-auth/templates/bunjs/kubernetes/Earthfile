@@ -40,6 +40,7 @@ data:
   APP_NAME: 'App name'
   APP_ENV: 'production'
   APP_DEBUG: 'false'
+  APP_STATE: '${env}'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"
