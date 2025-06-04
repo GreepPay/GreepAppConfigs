@@ -22,6 +22,9 @@ bunjs-server:
 	# Install bun packages
 	RUN bun install
 
+	# Run unit tests
+	RUN APP_STATE=test bun test
+
 	EXPOSE 8080
 	CMD [ "bun", "run", "index.ts" ]
 
