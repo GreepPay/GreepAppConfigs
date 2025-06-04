@@ -30,6 +30,8 @@ bunjs-server:
 	EXPOSE 8080
 	CMD [ "bun", "run", "index.ts" ]
 
+	ENV APP_STATE=dev
+
 	# We need to add our NGINX template to the container for startup,
 	# and configuration.
 	COPY ./conf/nginx.conf /etc/nginx/templates/default.conf.template
