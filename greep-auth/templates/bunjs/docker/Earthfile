@@ -21,6 +21,7 @@ bunjs-server:
 
 	# Install bun packages
 	RUN bun install
+	RUN bun add sqlite3
 
 	ENV APP_STATE=test
 
