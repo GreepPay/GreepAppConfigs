@@ -20,7 +20,7 @@ bunjs-server:
 	COPY  ./app .
 
 	# Install bun packages
-	RUN bun install
+	RUN bun install && bun pm trust --all
 
 	ENV APP_STATE=test
 
