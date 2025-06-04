@@ -22,8 +22,6 @@ bunjs-server:
 	# Install bun packages
 	RUN bun install
 
-	RUN bun pm trust sqlite3
-
 	ENV APP_STATE=test
 
 	# Run unit tests
