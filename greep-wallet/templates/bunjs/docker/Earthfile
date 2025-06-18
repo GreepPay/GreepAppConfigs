@@ -41,7 +41,7 @@ bunjs-server:
 	ENV APP_STATE=test
 
 	# Run unit tests
-	RUN bun test
+	RUN APP_STATE=test bun test
 
 	EXPOSE 8080
 	CMD [ "bun", "run", "index.ts" ]
