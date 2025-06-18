@@ -19,7 +19,7 @@ install:
 	ARG envs='dev,prod'
 	ARG version='0.1'
 	ARG docker_registry='drayfocus/earthly-sample'
-	ARG apptype='bunjs'
+	ARG apptype='php'
 
 	WORKDIR /setup-arena
 
@@ -43,7 +43,7 @@ setup:
 
 	ARG envs='dev'
 
-	ARG apptype='bunjs'
+	ARG apptype='php'
 
 	RUN mkdir app
 
@@ -55,7 +55,7 @@ setup:
 
 	## Enter repo_url.
 
-	RUN git clone https://github.com/GreepPay/messaging-service.git .
+	RUN git clone https://github.com/GreepPay/websocket-service.git .
 
 	RUN git checkout ${envs}
 
@@ -69,7 +69,7 @@ build:
 	ARG service='sample'
 	ARG envs='dev,prod'
 	ARG node_env="production"
-	ARG apptype='bunjs'
+	ARG apptype='php'
 
 	IF [ "$apptype" = "bunjs" ]
 		BUILD bunjs_docker_engine+bunjs-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service --node_env=$node_env
@@ -86,6 +86,8 @@ build:
 	IF [ "$apptype" = "php" ]
 		BUILD php_docker_engine+fpm-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
 		BUILD php_docker_engine+web-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
+		BUILD php_docker_engine+websocket-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
+		BUILD php_docker_engine+queue-worker --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service
 	END
 
 	IF [ "$apptype" = "python" ]
@@ -111,12 +113,17 @@ deploy:
 	ARG CRD_CONTROLLER_NAME
 	ARG CRD_KIND
 	ARG CRD_GROUP
+	ARG DB_HOST
+	ARG DB_PORT
 	ARG DB_USER
 	ARG DB_PASSWORD
-	ARG DB_HOST
-	ARG apptype='bunjs'
-	ARG service='service-name'
+	ARG apptype='php'
+	ARG service='greep-websocket'
 	ARG version=""
+	ARG APP_KEY
+	ARG PUSHER_APP_ID=''
+    ARG PUSHER_APP_KEY=''
+    ARG PUSHER_APP_SECRET=''
 
 	RUN mkdir -p ${service}/environments
 
@@ -142,17 +149,9 @@ deploy:
 	## Update deployment.yaml, configmap and secrets with latest versions
 
 	IF [ "$apptype" = "bunjs" ]
-	    IF [ "$envs" = "dev" ]
-			DO bunjs_kubernetes_engine+BUNJSAPP  --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1
-		END
-
-		IF [ "$envs" = "prod" ]
-			DO bunjs_kubernetes_engine+BUNJSAPP  --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1
-		END
-
+		DO bunjs_kubernetes_engine+BUNJSAPP  --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1
 		DO bunjs_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs
-		DO bunjs_kubernetes_engine+SECRETS --service=$service  --env=$envs --DB_USER=$DB_USER  --DB_PASSWORD=$DB_PASSWORD --DB_HOST=$DB_HOST
-
+		DO bunjs_kubernetes_engine+SECRETS --service=$service  --env=$envs
 	END
 
 	IF [ "$apptype" = "java" ]
@@ -168,9 +167,17 @@ deploy:
 	END
 
 	IF [ "$apptype" = "php" ]
-		DO php_kubernetes_engine+LARAVELAPP --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1
-		DO php_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs
-		DO php_kubernetes_engine+SECRETS --service=$service  --env=$envs
+
+	    IF [ "$envs" = "dev" ]
+		    DO php_kubernetes_engine+LARAVELAPP --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1 --httpsDomain1=stat-dev-websocket.greep.io --websocketDomain=dev-websocket.greep.io
+		END
+
+		IF [ "$envs" = "prod" ]
+		    DO php_kubernetes_engine+LARAVELAPP --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1
+		END
+
+		DO php_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs --DB_HOST=$DB_HOST
+		DO php_kubernetes_engine+SECRETS --service=$service  --env=$envs --DB_USER=$DB_USER --DB_PASSWORD=$DB_PASSWORD --APP_KEY=$APP_KEY --PUSHER_APP_ID=$PUSHER_APP_ID --PUSHER_APP_KEY=$PUSHER_APP_KEY --PUSHER_APP_SECRET=$PUSHER_APP_SECRET
 	END
 
 	IF [ "$apptype" = "python" ]
@@ -192,7 +199,7 @@ deploy:
 
 	# Waiting for pods to build
 
-	RUN sleep 20s
+	RUN sleep 30s
 
 	# Run post-deployment actions below. Example below.
-	RUN kubectl exec -n ${envs}-${service} deploy/${service}-webserver  -- bun run migrate:db
+	RUN kubectl exec -n ${envs}-${service} deploy/${service}-fpm  -- php artisan migrate --force

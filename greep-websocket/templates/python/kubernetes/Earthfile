@@ -1,12 +1,13 @@
 VERSION 0.6
 
-BUNJSAPP:
+PYTHONAPP:
 	COMMAND
     ARG service='sample'
     ARG env='prod'
     ARG dir="./$service/environments/$env"
     ARG file="$dir/app-template.yaml"
 	ARG version=0.1
+	ARG httpsDomain1=''
 	ARG CRD_KIND='CustomAppTemplate'
 	ARG CRD_GROUP='app.resourcegroup.io'
 	ARG OUTPUT="apiVersion: ${CRD_GROUP}/v1
@@ -18,12 +19,12 @@ spec:
   environment: '${env}'
   deploymentReplicas: 1
   imageVersion: '${version}'
-  letEncryptEmail: 'ray@greep.io'
-  configsToUse: 'node-with-config'
+  letEncryptEmail: 'drayfocus@gmail.com'
+  configsToUse: 'python-default'
+  httpsDomain1: '${httpsDomain1}'
 "
 	RUN mkdir -p $dir
     RUN echo "$OUTPUT" > "$file"
-
 
 CONFIGMAP:
 	COMMAND
@@ -40,7 +41,6 @@ data:
   APP_NAME: 'App name'
   APP_ENV: 'production'
   APP_DEBUG: 'false'
-  APP_STATE: '${env}'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"
@@ -51,9 +51,6 @@ SECRETS:
     ARG env='prod'
     ARG dirExtra="./$service/environments/$env/extras-$service"
     ARG file="$dirExtra/secrets.yaml"
-    ARG DB_USER='user'
-    ARG DB_PASSWORD='password'
-    ARG DB_HOST='localhost'
 	ARG OUTPUT="apiVersion: v1
 kind: Secret
 metadata:
@@ -61,11 +58,9 @@ metadata:
   namespace: ${env}-${service}
 type: Opaque
 stringData:
-   DB_USER: '$DB_USER'
-   DB_PASSWORD: '$DB_PASSWORD'
-   DB_DATABASE: 'greep-${env}'
-   DB_HOST: '$DB_HOST'
-   DB_USE_SSL: 'true'
+  APP_KEY: ''
+  DB_USERNAME: ''
+  DB_PASSWORD: ''
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"

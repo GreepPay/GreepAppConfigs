@@ -13,7 +13,6 @@ bunjs-server:
 	ARG service='sample'
 
 	RUN apk add --no-cache curl bash
-	RUN apk add --no-cache ca-certificates
 
 	# Create app directory
 	WORKDIR /usr/src/app

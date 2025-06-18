@@ -2,16 +2,23 @@ VERSION 0.6
 FROM bash:4.4
 WORKDIR /setup-arena
 
-bunjs-server:
+node-js-base:
+	FROM node:18.16.0-alpine
+
+	SAVE ARTIFACT  /usr /usr
+
+nodejs-server:
 	# We need an nginx container which can pass requests to our nodejs container,
 	# as well as serve any static content.
-	FROM oven/bun:alpine
+	FROM nginx:alpine
+
+	# Install nvm with node and npm
+
+	COPY +node-js-base/usr /usr/
 
 	ARG version='0.1'
 	ARG docker_registry='drayfocus/earthly-sample'
 	ARG service='sample'
-
-	RUN apk add --no-cache curl bash
 
 	# Create app directory
 	WORKDIR /usr/src/app
@@ -19,18 +26,21 @@ bunjs-server:
 	## Then copy our app source code into the image
 	COPY  ./app .
 
-	# Install bun packages
-	RUN bun install
+	# Build logic
+	RUN cd Logic && npm install && cd /usr/src/app
 
-	ENV APP_STATE=test
+	# Build ui-component
+	RUN cd ui-components && npm install && cd /usr/src/app
 
-	# Run unit tests
-	RUN bun test
+	# build app
+	RUN cd app && npm install && npm run build && cd ..
+
+	# build server
+	RUN cd server && npm install && cd ..
+
 
 	EXPOSE 8080
-	CMD [ "bun", "run", "index.ts" ]
-
-	ENV APP_STATE=dev
+	CMD [ "node", "server/src/server.js" ]
 
 	# We need to add our NGINX template to the container for startup,
 	# and configuration.

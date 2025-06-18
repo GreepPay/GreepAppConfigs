@@ -7,6 +7,7 @@ LARAVELAPP:
     ARG dir="./$service/environments/$env"
     ARG file="$dir/app-template.yaml"
     ARG version=0.1
+    ARG websocketDomain=''
     ARG httpsDomain1=''
     ARG deploymentReplicas=1
     ARG CRD_KIND='CustomAppTemplate'
@@ -20,9 +21,10 @@ spec:
   environment: '${env}'
   deploymentReplicas: ${deploymentReplicas}
   imageVersion: '${version}'
+  websocketDomain: '${websocketDomain}'
   httpsDomain1: '${httpsDomain1}'
   letEncryptEmail: 'ayo@greep.io'
-  configsToUse: 'php-default,cert-manager-http,cert-manager-http/issuer-lets-encrypt-1,redis'
+  configsToUse: 'php-default,cert-manager-http,cert-manager-http/issuer-lets-encrypt-1,websocket,websocket/issuer,redis,queue-workers'
 "
 	RUN mkdir -p $dir
   RUN echo "$OUTPUT" > "$file"
@@ -46,6 +48,11 @@ data:
 
   APP_URL: 'https://api-client-dev.greep.io'
   APP_STATE: '${env}'
+  PUSHER_HOST: 'greep-websocket.${env}-greep-websocket.svc.cluster.local'
+  PUSHER_PORT: '6001'
+  PUSHER_SCHEME: 'https'
+  PUSHER_APP_CLUSTER: 'mt1'
+  WEBSOCKETS_STATISTICS_ENABLED: 'true'
 
   # Update the LOG_CHANNEL to stdout for Kubernetes
   LOG_CHANNEL: 'stdout'
@@ -60,28 +67,14 @@ data:
   QUEUE_CONNECTION: 'redis'
   DB_SSLCERT: '/opt/apps/laravel-in-kubernetes/storage/certs/${env}/ca-certificate.crt'
 
-  # Microservice databases
-  DB_AUTH_DATABASE: 'greep-${env}'
-  DB_USER_DATABASE: 'greep-${env}'
-  DB_NOTIFICATION_DATABASE: 'greep-${env}'
-  DB_WALLET_DATABASE: 'greep-${env}'
-  DB_BLOCKCHAIN_DATABASE: 'greep-${env}'
-  DB_COMMERCE_DATABASE: 'greep-${env}'
+  DB_DATABASE: 'greep-${env}'
 
   # Microservice URL
   AUTH_API: 'http://greep-auth-webserver.${env}-greep-auth.svc.cluster.local:80'
-  BLOCKCHAIN_API: 'http://greep-blockchain-webserver.${env}-greep-blockchain.svc.cluster.local:80'
-  NOTIFICATION_API: 'http://greep-notification-webserver.${env}-greep-notification.svc.cluster.local:80'
-  USER_API: 'http://greep-user-webserver.${env}-greep-user.svc.cluster.local:80'
-  WALLET_API: 'http://greep-wallet-webserver.${env}-greep-wallet.svc.cluster.local:80'
-  COMMERCE_API: 'http://greep-commerce-webserver.${env}-greep-commerce.svc.cluster.local:80'
 
   MEMCACHED_HOST: 'memcached'
   REDIS_HOST:  'greep-user-api-redis.${env}-greep-user-api.svc.cluster.local'
   REDIS_PORT: '6379'
-
-  LIGHTHOUSE_CACHE_ENABLE: 'true'
-  GRAPHIQL_ENABLED: 'true'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"
@@ -92,14 +85,12 @@ SECRETS:
     ARG env='prod'
     ARG dirExtra="./$service/environments/$env/extras-$service"
     ARG file="$dirExtra/secrets.yaml"
-    ARG AZURE_STORAGE_KEY=''
-    ARG AZURE_STORAGE_NAME=''
-    ARG AZURE_STORAGE_CONTAINER=''
-    ARG AZURE_STORAGE_URL=''
-    ARG AZURE_STORAGE_CONNECTION_STRING=''
     ARG DB_USER='user'
     ARG DB_PASSWORD='password'
     ARG APP_KEY=''
+    ARG PUSHER_APP_ID=''
+    ARG PUSHER_APP_KEY=''
+    ARG PUSHER_APP_SECRET=''
 	ARG OUTPUT="apiVersion: v1
 kind: Secret
 metadata:
@@ -111,12 +102,9 @@ stringData:
   DB_USERNAME: '$DB_USER'
   DB_PASSWORD: '$DB_PASSWORD'
   REDIS_PASSWORD: "null"
-
-  AZURE_STORAGE_KEY: '${AZURE_STORAGE_KEY}'
-  AZURE_STORAGE_NAME:  '${AZURE_STORAGE_NAME}'
-  AZURE_STORAGE_CONTAINER: '${AZURE_STORAGE_CONTAINER}'
-  AZURE_STORAGE_URL: '${AZURE_STORAGE_URL}'
-  AZURE_STORAGE_CONNECTION_STRING: '${AZURE_STORAGE_CONNECTION_STRING}'
+  PUSHER_APP_ID: '$PUSHER_APP_ID'
+  PUSHER_APP_KEY: '$PUSHER_APP_KEY'
+  PUSHER_APP_SECRET: '$PUSHER_APP_SECRET'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"
