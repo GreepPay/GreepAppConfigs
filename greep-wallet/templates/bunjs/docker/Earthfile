@@ -19,7 +19,18 @@ bunjs-server:
 	## Then copy our app source code into the image
 	COPY  ./app .
 
-	# Setup puppeteer
+	# Install bun packages
+	RUN bun install
+
+	RUN bun add sqlite3 --save
+
+	ENV APP_STATE=test
+
+	# Run unit tests
+	RUN APP_STATE=test bun test
+
+
+		# Setup puppeteer
 
 	# Puppeteer dependencies
     RUN apk add --no-cache \
@@ -34,16 +45,6 @@ bunjs-server:
     # Set environment variable for Puppeteer
     ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
     ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-
-	# Install bun packages
-	RUN bun install
-
-	RUN bun add sqlite3 --save
-
-	ENV APP_STATE=test
-
-	# Run unit tests
-	RUN APP_STATE=test bun test
 
 	EXPOSE 8080
 	CMD [ "bun", "run", "index.ts" ]
