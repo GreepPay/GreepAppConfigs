@@ -38,6 +38,8 @@ bunjs-server:
 	# Install bun packages
 	RUN bun install
 
+	RUN bun install sqlite3 --save
+
 	ENV APP_STATE=test
 
 	# Run unit tests
