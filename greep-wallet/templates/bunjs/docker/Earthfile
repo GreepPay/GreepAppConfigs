@@ -5,7 +5,7 @@ WORKDIR /setup-arena
 bunjs-server:
 	# We need an nginx container which can pass requests to our nodejs container,
 	# as well as serve any static content.
-    FROM oven/bun:1.2.4-alpine
+	FROM oven/bun:alpine
 
 	ARG version='0.1'
 	ARG docker_registry='drayfocus/earthly-sample'
@@ -38,12 +38,12 @@ bunjs-server:
 	# Install bun packages
 	RUN bun install
 
-	RUN bun add sqlite3 --save
-
 	ENV APP_STATE=test
 
 	# Run unit tests
-	RUN APP_STATE=test bun test
+	RUN bun test
+
+	ENV APP_STATE=dev
 
 	EXPOSE 8080
 	CMD [ "bun", "run", "index.ts" ]
