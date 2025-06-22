@@ -10,6 +10,8 @@ bunjs-server:
 	ARG version='0.1'
 	ARG docker_registry='drayfocus/earthly-sample'
 	ARG service='sample'
+	ARG YELLOW_CARD_API_KEY='api_key'
+    ARG YELLOW_CARD_BUSINESS_ID=''
 
 	RUN apk add --no-cache curl bash nodejs npm
 
@@ -39,6 +41,8 @@ bunjs-server:
 	RUN bun install
 
 	ENV APP_STATE=test
+	ENV YELLOW_CARD_API_KEY=${YELLOW_CARD_API_KEY}
+	ENV YELLOW_CARD_BUSINESS_ID=${YELLOW_CARD_BUSINESS_ID}
 
 	# Run unit tests
 	RUN bun test
