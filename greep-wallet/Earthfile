@@ -70,9 +70,11 @@ build:
 	ARG envs='dev,prod'
 	ARG node_env="production"
 	ARG apptype='bunjs'
+	ARG YELLOW_CARD_BUSINESS_ID
+    ARG YELLOW_CARD_BUSINESS_NAME
 
 	IF [ "$apptype" = "bunjs" ]
-		BUILD bunjs_docker_engine+bunjs-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service --node_env=$node_env
+		BUILD bunjs_docker_engine+bunjs-server --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service --node_env=$node_env --YELLOW_CARD_BUSINESS_ID=$YELLOW_CARD_BUSINESS_ID --YELLOW_CARD_BUSINESS_NAME=$YELLOW_CARD_BUSINESS_NAME
 	END
 
 	IF [ "$apptype" = "java" ]
