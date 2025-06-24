@@ -74,6 +74,8 @@ data:
   USER_API: 'http://greep-user-webserver.${env}-greep-user.svc.cluster.local:80'
   WALLET_API: 'http://greep-wallet-webserver.${env}-greep-wallet.svc.cluster.local:80'
   OFFRAMP_API: 'http://greep-off-ramp-webserver.${env}-greep-off-ramp.svc.cluster.local:80'
+  COMMERCE_API: 'http://greep-commerce-webserver.${env}-greep-commerce.svc.cluster.local:80'
+  MESSAGING_API: 'http://greep-messaging-webserver.${env}-greep-messaging.svc.cluster.local:80'
 
   MEMCACHED_HOST: 'memcached'
   REDIS_HOST:  'greep-pos-api-redis.${env}-greep-pos-api.svc.cluster.local'
