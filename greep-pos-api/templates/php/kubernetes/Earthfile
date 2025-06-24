@@ -66,6 +66,9 @@ data:
   DB_NOTIFICATION_DATABASE: 'greep-${env}'
   DB_WALLET_DATABASE: 'greep-${env}'
   DB_BLOCKCHAIN_DATABASE: 'greep-${env}'
+  DB_OFFRAMP_DATABASE: 'greep-${env}'
+  DB_COMMERCE_DATABASE: 'greep-${env}'
+  DB_MESSAGING_DATABASE: 'greep-${env}'
 
   # Microservice URL
   AUTH_API: 'http://greep-auth-webserver.${env}-greep-auth.svc.cluster.local:80'
