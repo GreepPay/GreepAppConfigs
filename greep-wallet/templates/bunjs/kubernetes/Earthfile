@@ -58,6 +58,11 @@ SECRETS:
     ARG YELLOW_CARD_BUSINESS_NAME=''
     ARG BRIDGE_API_KEY=''
     ARG BRIDGE_BASE_URL=''
+    ARG ISH_BANK_CLIENT_ID=""
+    ARG ISH_BANK_USERNAME=""
+    ARG ISH_BANK_PASSWORD=""
+    ARG ISH_BANK_ENV=""
+    ARG ISH_BANK_STORE_KEY=""
     ARG file="$dirExtra/secrets.yaml"
 	ARG OUTPUT="apiVersion: v1
 kind: Secret
@@ -79,6 +84,11 @@ stringData:
     BRIDGE_BASE_URL: '$BRIDGE_BASE_URL'
     REDIS_HOST: 'greep-wallet-redis.${env}-greep-wallet.svc.cluster.local'
     REDIS_PORT: '6379'
+    ISH_BANK_CLIENT_ID: '$ISH_BANK_CLIENT_ID'
+    ISH_BANK_USERNAME: '$ISH_BANK_USERNAME'
+    ISH_BANK_PASSWORD: '$ISH_BANK_PASSWORD'
+    ISH_BANK_ENV: '$ISH_BANK_ENV'
+    ISH_BANK_STORE_KEY: '$ISH_BANK_STORE_KEY'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"
