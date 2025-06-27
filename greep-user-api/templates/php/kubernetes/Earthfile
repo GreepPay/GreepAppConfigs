@@ -66,6 +66,8 @@ data:
   DB_NOTIFICATION_DATABASE: 'greep-${env}'
   DB_WALLET_DATABASE: 'greep-${env}'
   DB_BLOCKCHAIN_DATABASE: 'greep-${env}'
+  DB_COMMERCE_DATABASE: 'greep-${env}'
+  DB_MESSAGING_DATABASE: 'greep-${env}'
 
   # Microservice URL
   AUTH_API: 'http://greep-auth-webserver.${env}-greep-auth.svc.cluster.local:80'
@@ -74,6 +76,9 @@ data:
   USER_API: 'http://greep-user-webserver.${env}-greep-user.svc.cluster.local:80'
   WALLET_API: 'http://greep-wallet-webserver.${env}-greep-wallet.svc.cluster.local:80'
   OFFRAMP_API: 'http://greep-off-ramp-webserver.${env}-greep-off-ramp.svc.cluster.local:80'
+  COMMERCE_API: 'http://greep-commerce-webserver.${env}-greep-commerce.svc.cluster.local:80'
+  MESSAGING_API: 'http://greep-messaging-webserver.${env}-greep-messaging.svc.cluster.local:80'
+  WEBSOCKET_API: 'http://greep-websocket-webserver.${env}-greep-websocket.svc.cluster.local:80'
 
   MEMCACHED_HOST: 'memcached'
   REDIS_HOST:  'greep-user-api-redis.${env}-greep-user-api.svc.cluster.local'
