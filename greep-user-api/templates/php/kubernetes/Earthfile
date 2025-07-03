@@ -78,7 +78,7 @@ data:
   OFFRAMP_API: 'http://greep-off-ramp-webserver.${env}-greep-off-ramp.svc.cluster.local:80'
   COMMERCE_API: 'http://greep-commerce-webserver.${env}-greep-commerce.svc.cluster.local:80'
   MESSAGING_API: 'http://greep-messaging-webserver.${env}-greep-messaging.svc.cluster.local:80'
-  WEBSOCKET_API: 'http://greep-websocket-webserver.${env}-greep-websocket.svc.cluster.local:80'
+  WEBSOCKET_API: 'http://greep-websocket-webserver.${env}-greep-websocket:80'
 
   MEMCACHED_HOST: 'memcached'
   REDIS_HOST:  'greep-user-api-redis.${env}-greep-user-api.svc.cluster.local'
