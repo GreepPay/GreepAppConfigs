@@ -161,7 +161,7 @@ deploy:
 		END
 
 		IF [ "$envs" = "prod" ]
-			DO bunjs_kubernetes_engine+BUNJSAPP  --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1
+			DO bunjs_kubernetes_engine+BUNJSAPP  --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=2
 		END
 
 		DO bunjs_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs --YELLOW_CARD_BASE_URL=$YELLOW_CARD_BASE_URL

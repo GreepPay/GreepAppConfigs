@@ -180,7 +180,7 @@ deploy:
 
 	IF [ "$apptype" = "rust" ]
 	    IF [ "$envs" = "prod" ]
-			DO rust_kubernetes_engine+RUSTAPP --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1
+			DO rust_kubernetes_engine+RUSTAPP --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=2
 		END
 
 		IF [ "$envs" = "dev" ]
