@@ -24,7 +24,7 @@ spec:
   websocketDomain: '${websocketDomain}'
   httpsDomain1: '${httpsDomain1}'
   letEncryptEmail: 'ayo@greep.io'
-  configsToUse: 'php-default,cert-manager-http,cert-manager-http/issuer-lets-encrypt-1,websocket,websocket/issuer,redis,queue-workers'
+  configsToUse: 'php-default,cert-manager-http,cert-manager-http/issuer-lets-encrypt-1,websocket,websocket/issuer,queue-workers'
 "
 	RUN mkdir -p $dir
   RUN echo "$OUTPUT" > "$file"
