@@ -48,7 +48,7 @@ data:
 
   APP_URL: 'https://api-client-dev.greep.io'
   APP_STATE: '${env}'
-  PUSHER_HOST: 'greep-websocket.${env}-greep-websocket'
+  PUSHER_HOST: 'greep-websocket-websocket.${env}-greep-websocket'
   PUSHER_PORT: '6001'
   PUSHER_SCHEME: 'http'
   PUSHER_APP_CLUSTER: 'mt1'
