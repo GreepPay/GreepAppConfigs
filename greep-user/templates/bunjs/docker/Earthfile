@@ -5,7 +5,7 @@ WORKDIR /setup-arena
 bunjs-server:
 	# We need an nginx container which can pass requests to our nodejs container,
 	# as well as serve any static content.
-	FROM oven/bun:1.0.5-alpine
+	FROM oven/bun:alpine
 
 	ARG version='0.1'
 	ARG docker_registry='drayfocus/earthly-sample'
