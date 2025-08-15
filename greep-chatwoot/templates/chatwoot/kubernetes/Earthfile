@@ -1,5 +1,4 @@
 VERSION 0.6
-
 CHATWOOT:
 	COMMAND
     ARG service='sample'
@@ -8,9 +7,9 @@ CHATWOOT:
     ARG file="$dir/app-template.yaml"
 	ARG version=0.1
 	ARG httpsDomain1=''
-  ARG CRD_KIND='CustomAppTemplate'
+	ARG CRD_KIND='CustomAppTemplate'
 	ARG CRD_GROUP='app.resourcegroup.io'
-	ARG OUTPUT="apiVersion: apiVersion: ${CRD_GROUP}/v1
+	ARG OUTPUT="apiVersion: ${CRD_GROUP}/v1
 kind: ${CRD_KIND}
 metadata:
   name: ${service}
