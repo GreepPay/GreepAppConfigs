@@ -19,7 +19,7 @@ spec:
   deploymentReplicas: 1
   imageVersion: '${version}'
   httpsDomain1: '${httpsDomain1}'
-  configsToUse: 'chatwoot,postgre-SQL,cert-manager-http,cert-manager-http/issuer-1'
+  configsToUse: 'chatwoot,postgre-SQL,cert-manager-http,cert-manager-http/issuer-lets-encrypt-1'
 "
 	RUN mkdir -p $dir
     RUN echo "$OUTPUT" > "$file"
@@ -31,7 +31,7 @@ CONFIGMAP:
   ARG dirExtra="./$service/environments/$env/extras-$service"
   ARG FRONTEND_URL="https://support-1344566.greep.io"
   ARG RAILS_ENV="production"
-  ARG POSTGRES_HOST="greep-chatwoot-postgres.prod-greep-chatwoot.svc.cluster.local"
+  ARG POSTGRES_HOST="greep-chatwoot-webserver.prod-greep-chatwoot"
   ARG POSTGRES_PORT="5432"
   ARG POSTGRES_DATABASE="postgres"
   ARG POSTGRES_USERNAME="postgres"
