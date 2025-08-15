@@ -11,10 +11,6 @@ build:
 	ARG envs='dev'
 	ARG apptype='chatwoot'
 
-	WORKDIR /build-arena
-
-	COPY ./environments ${service}/environments
-
 	IF [ "$apptype" = "chatwoot" ]
 		BUILD chatwoot_docker_engine+web --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service --env=$envs
 		BUILD chatwoot_docker_engine+worker --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service --env=$envs
