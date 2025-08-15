@@ -19,7 +19,7 @@ spec:
   deploymentReplicas: 1
   imageVersion: '${version}'
   httpsDomain1: '${httpsDomain1}'
-  configsToUse: 'chatwoot,postgre-SQL,cert-manager-http,cert-manager-http/issuer-1'
+  configsToUse: 'chatwoot,postgre-SQL,cert-manager-http,cert-manager-http/issuer-lets-encrypt-1'
 "
 	RUN mkdir -p $dir
     RUN echo "$OUTPUT" > "$file"
