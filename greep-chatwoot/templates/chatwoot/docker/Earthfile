@@ -30,7 +30,7 @@ web:
 
 	# Start rails server
 	ENTRYPOINT ["docker/entrypoints/rails.sh"]
-	CMD  bundle exec bundle exec rails s -b 0.0.0.0 -p 80
+	# CMD bundle exec rails s -b 0.0.0.0 -p 80
 
 	SAVE IMAGE --push ${docker_registry}/${service}_web:v${version}
 
@@ -52,6 +52,6 @@ worker:
 
 	# Start rails server
 	ENTRYPOINT ["docker/entrypoints/rails.sh"]
-	CMD bundle exec sidekiq -C config/sidekiq.yml
+	# CMD bundle exec sidekiq -C config/sidekiq.yml
 
 	SAVE IMAGE --push ${docker_registry}/${service}_worker:v${version}
