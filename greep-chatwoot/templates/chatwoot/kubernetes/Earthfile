@@ -19,7 +19,7 @@ spec:
   deploymentReplicas: 1
   imageVersion: '${version}'
   httpsDomain1: '${httpsDomain1}'
-  configsToUse: 'chatwoot,postgre-SQL,cert-manager-http,cert-manager-http/issuer-lets-encrypt-1'
+  configsToUse: 'chatwoot,cert-manager-http,cert-manager-http/issuer-lets-encrypt-1'
 "
 	RUN mkdir -p $dir
     RUN echo "$OUTPUT" > "$file"
@@ -33,7 +33,7 @@ CONFIGMAP:
   ARG RAILS_ENV="production"
   ARG POSTGRES_HOST="greep-chatwoot-webserver.prod-greep-chatwoot"
   ARG POSTGRES_PORT="5432"
-  ARG POSTGRES_DATABASE="postgres"
+  ARG POSTGRES_DATABASE="greep-chatwoot"
   ARG POSTGRES_USERNAME="postgres"
   ARG POSTGRES_PASSWORD=""
   ARG REDIS_URL="redis://greep-user-api-redis.prod-greep-user-api.svc.cluster.local:6379"
