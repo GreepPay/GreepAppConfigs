@@ -1,0 +1,109 @@
+VERSION 0.6
+
+CHATWOOT:
+	COMMAND
+    ARG service='sample'
+    ARG env='prod'
+    ARG dir="./$service/environments/$env"
+    ARG file="$dir/app-template.yaml"
+	ARG version=0.1
+	ARG httpsDomain1=''
+  ARG CRD_KIND='CustomAppTemplate'
+	ARG CRD_GROUP='app.resourcegroup.io'
+	ARG OUTPUT="apiVersion: apiVersion: ${CRD_GROUP}/v1
+kind: ${CRD_KIND}
+metadata:
+  name: ${service}
+spec:
+  serviceName: '${service}'
+  environment: '${env}'
+  deploymentReplicas: 1
+  imageVersion: '${version}'
+  httpsDomain1: '${httpsDomain1}'
+  configsToUse: 'chatwoot,postgre-SQL,cert-manager-http,cert-manager-http/issuer-1'
+"
+	RUN mkdir -p $dir
+    RUN echo "$OUTPUT" > "$file"
+
+CONFIGMAP:
+  COMMAND
+  ARG service='greep-chatwoot'
+  ARG env='prod'
+  ARG dirExtra="./$service/environments/$env/extras-$service"
+  ARG FRONTEND_URL="https://support-1344566.greep.io"
+  ARG RAILS_ENV="production"
+  ARG POSTGRES_HOST="greep-chatwoot-postgres.prod-greep-chatwoot.svc.cluster.local"
+  ARG POSTGRES_PORT="5432"
+  ARG POSTGRES_DATABASE="postgres"
+  ARG POSTGRES_USERNAME="postgres"
+  ARG POSTGRES_PASSWORD=""
+  ARG REDIS_URL="redis://greep-user-api-redis.prod-greep-user-api.svc.cluster.local:6379"
+  ARG REDIS_PASSWORD=""
+  ARG SMTP_ADDRESS=""
+  ARG SMTP_AUTHENTICATION=""
+  ARG MAILER_SENDER_EMAIL=""
+  ARG SMTP_DOMAIN=""
+  ARG SMTP_ENABLE_STARTTLS_AUTO="true"
+  ARG SMTP_PORT="587"
+  ARG DEFAULT_LOCALE="en"
+  ARG ACTIVE_STORAGE_SERVICE="microsoft"
+  ARG DIRECT_UPLOADS_ENABLED="true"
+  ARG file="$dirExtra/configmap.yaml"
+  ARG OUTPUT="apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${service}
+  namespace: ${env}-${service}
+data:
+  FRONTEND_URL: '${FRONTEND_URL}'
+  RAILS_ENV: '${RAILS_ENV}'
+  POSTGRES_HOST: '${POSTGRES_HOST}'
+  POSTGRES_PORT: '${POSTGRES_PORT}'
+  POSTGRES_DATABASE: '${POSTGRES_DATABASE}'
+  POSTGRES_USERNAME: '${POSTGRES_USERNAME}'
+  POSTGRES_PASSWORD: '${POSTGRES_PASSWORD}'
+  REDIS_URL: '${REDIS_URL}'
+  REDIS_PASSWORD: '${REDIS_PASSWORD}'
+  SMTP_ADDRESS: '${SMTP_ADDRESS}'
+  SMTP_AUTHENTICATION: '${SMTP_AUTHENTICATION}'
+  MAILER_SENDER_EMAIL: '${MAILER_SENDER_EMAIL}'
+  SMTP_DOMAIN: '${SMTP_DOMAIN}'
+  SMTP_ENABLE_STARTTLS_AUTO: '${SMTP_ENABLE_STARTTLS_AUTO}'
+  SMTP_PORT: '${SMTP_PORT}'
+  DEFAULT_LOCALE: '${DEFAULT_LOCALE}'
+  ACTIVE_STORAGE_SERVICE: '${ACTIVE_STORAGE_SERVICE}'
+  DIRECT_UPLOADS_ENABLED: '${DIRECT_UPLOADS_ENABLED}'
+"
+  RUN mkdir -p $dirExtra
+  RUN echo "$OUTPUT" > "$file"
+
+SECRETS:
+  COMMAND
+  ARG service='greep-chatwoot'
+  ARG env='prod'
+  ARG dirExtra="./$service/environments/$env/extras-$service"
+  ARG SECRET_KEY_BASE=""
+  ARG SMTP_USERNAME=""
+  ARG SMTP_PASSWORD=""
+  ARG AZURE_STORAGE_ACCOUNT_NAME=""
+  ARG AZURE_STORAGE_ACCESS_KEY=""
+  ARG AZURE_STORAGE_CONTAINER=""
+  ARG IG_VERIFY_TOKEN=""
+  ARG file="$dirExtra/secrets.yaml"
+  ARG OUTPUT="apiVersion: v1
+kind: Secret
+metadata:
+  name: ${service}
+  namespace: ${env}-${service}
+type: Opaque
+stringData:
+  SECRET_KEY_BASE: '${SECRET_KEY_BASE}'
+  SMTP_USERNAME: '${SMTP_USERNAME}'
+  SMTP_PASSWORD: '${SMTP_PASSWORD}'
+  AZURE_STORAGE_ACCOUNT_NAME: '${AZURE_STORAGE_ACCOUNT_NAME}'
+  AZURE_STORAGE_ACCESS_KEY: '${AZURE_STORAGE_ACCESS_KEY}'
+  AZURE_STORAGE_CONTAINER: '${AZURE_STORAGE_CONTAINER}'
+  IG_VERIFY_TOKEN: '${IG_VERIFY_TOKEN}'
+"
+  RUN mkdir -p $dirExtra
+  RUN echo "$OUTPUT" > "$file"

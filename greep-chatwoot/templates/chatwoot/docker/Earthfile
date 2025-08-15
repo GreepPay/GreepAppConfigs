@@ -1,0 +1,57 @@
+VERSION 0.6
+FROM bash:4.4
+WORKDIR /setup-arena
+
+web:
+	FROM chatwoot/chatwoot:latest
+
+	ARG version='0.1'
+	ARG docker_registry='drayfocus/earthly-sample'
+	ARG service='sample'
+	ARG env
+
+	RUN chmod +x docker/entrypoints/rails.sh
+
+	# Lets add database cert
+	COPY ./conf/db-cert.crt db-cert.crt
+
+
+	# Add Nginx
+	RUN apk update && \
+				apk upgrade && \
+				apk add --no-cache nginx
+
+	# Create the default Nginx configuration file
+	RUN mkdir -p /run/nginx
+	COPY ./conf/nginx.conf /etc/nginx/templates/default.conf.template
+	# COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+
+	EXPOSE 80
+
+	# Start rails server
+	ENTRYPOINT ["docker/entrypoints/rails.sh"]
+	CMD  bundle exec bundle exec rails s -b 0.0.0.0 -p 80
+
+	SAVE IMAGE --push ${docker_registry}/${service}_${env}_web:v${version}
+
+
+worker:
+	FROM chatwoot/chatwoot:latest
+
+	ARG version='0.1'
+	ARG docker_registry='drayfocus/earthly-sample'
+	ARG service='sample'
+	ARG env
+
+	RUN chmod +x docker/entrypoints/rails.sh
+
+	# Lets add database cert
+	COPY ./conf/db-cert.crt db-cert.crt
+
+	EXPOSE 3000
+
+	# Start rails server
+	ENTRYPOINT ["docker/entrypoints/rails.sh"]
+	CMD bundle exec sidekiq -C config/sidekiq.yml
+
+	SAVE IMAGE --push ${docker_registry}/${service}_${env}_worker:v${version}

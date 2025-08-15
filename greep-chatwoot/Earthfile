@@ -1,0 +1,93 @@
+VERSION 0.6
+FROM bash:4.4
+IMPORT ./templates/chatwoot/kubernetes AS chatwoot_kubernetes_engine
+IMPORT ./templates/chatwoot/docker AS chatwoot_docker_engine
+WORKDIR /build-arena
+
+build:
+	ARG version='0.1'
+	ARG DOCKER_REGISTRY='drayfocus'
+	ARG service='greep-chatwoot'
+	ARG envs='dev'
+	ARG apptype='chatwoot'
+
+	WORKDIR /build-arena
+
+	COPY ./environments ${service}/environments
+
+	IF [ "$apptype" = "chatwoot" ]
+		BUILD chatwoot_docker_engine+web --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service --env=$envs
+		BUILD chatwoot_docker_engine+worker --version=$version --docker_registry=$DOCKER_REGISTRY --service=$service --env=$envs
+	END
+
+deploy:
+	FROM mcr.microsoft.com/azure-cli:2.9.0
+
+	# setup kubectl
+	ARG envs='dev'
+	ARG AZURE_CLIENT_ID
+	ARG AZURE_CLIENT_SECRET
+	ARG AZURE_TENANT_ID
+	ARG AZURE_SUBSCRIPTION_ID
+	ARG AZURE_RESOURCE_GROUP
+	ARG AZURE_KUBERNETES_CLUSTER_NAME
+	ARG CRD_CONTROLLER_NAME
+	ARG DOCKER_POSTGRES_PASSWORD
+	ARG SMTP_ADDRESS
+	ARG SMTP_AUTHENTICATION
+	ARG MAILER_SENDER_EMAIL
+	ARG SMTP_DOMAIN
+	ARG SECRET_KEY_BASE_CHATWOOT
+	ARG SMTP_USERNAME
+	ARG SMTP_PASSWORD
+	ARG AZURE_STORAGE_ACCOUNT_NAME
+	ARG AZURE_STORAGE_ACCESS_KEY
+	ARG AZURE_STORAGE_CONTAINER
+	ARG CRD_KIND
+	ARG CRD_GROUP
+	ARG apptype='chatwoot'
+	ARG service='greep-chatwoot'
+	ARG version=""
+
+	RUN mkdir -p ${service}/environments
+
+	# Remove .gitkeep file if it exists
+	RUN rm -f ${service}/environments/gitkeep
+
+	# Install necessary tools using apk package manager
+	RUN apk update && \
+    apk add --no-cache wget bash
+
+	# Step to install kubectl
+    RUN wget -O /usr/local/bin/kubectl https://dl.k8s.io/release/$(wget -qO- https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl && \
+        chmod +x /usr/local/bin/kubectl && \
+        kubectl version --client
+
+	# Step to log in to Azure
+	RUN az login --service-principal -u ${AZURE_CLIENT_ID} -p ${AZURE_CLIENT_SECRET} --tenant ${AZURE_TENANT_ID} && \
+        az account set --subscription ${AZURE_SUBSCRIPTION_ID}
+
+	# Step to activate a Kubernetes cluster
+	RUN az aks get-credentials --resource-group ${AZURE_RESOURCE_GROUP} --name ${AZURE_KUBERNETES_CLUSTER_NAME}
+
+	## Update deployment.yaml with latest versions
+
+	IF [ "$apptype" = "chatwoot" ]
+		DO chatwoot_kubernetes_engine+CHATWOOT -CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP --service=$service --env=$envs --version=$version --httpsDomain1="support-1344566.greep.io"
+		DO python_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs --POSTGRES_PASSWORD=$DOCKER_POSTGRES_PASSWORD --SMTP_ADDRESS=$SMTP_ADDRESS --SMTP_AUTHENTICATION=$SMTP_AUTHENTICATION --MAILER_SENDER_EMAIL=$MAILER_SENDER_EMAIL --SMTP_DOMAIN=$SMTP_DOMAIN
+		DO python_kubernetes_engine+SECRETS --service=$service  --env=$envs --SECRET_KEY_BASE=$SECRET_KEY_BASE_CHATWOOT --SMTP_USERNAME=$SMTP_USERNAME --SMTP_PASSWORD=$SMTP_PASSWORD --AZURE_STORAGE_ACCOUNT_NAME=$AZURE_STORAGE_ACCOUNT_NAME --AZURE_STORAGE_ACCESS_KEY=$AZURE_STORAGE_ACCESS_KEY --AZURE_STORAGE_CONTAINER=$AZURE_STORAGE_CONTAINER
+	END
+
+	## deploy kubernetes configs
+	IF [ "$apptype" = "chatwoot" ]
+		RUN kubectl cp $service/environments/${envs}/extras-$service $(kubectl get pod -l  app=${CRD_CONTROLLER_NAME} -o jsonpath="{.items[0].metadata.name}"):/usr/src/app/configs
+		RUN kubectl apply -f $service/environments/${envs}/app-template.yaml
+
+		# Waiting for pods to build
+
+		RUN sleep 30s
+
+		# Running database migration
+
+		RUN kubectl exec -n ${envs}-${service} deploy/${service}-webserver  -- bundle exec rails db:chatwoot_prepare
+	END
