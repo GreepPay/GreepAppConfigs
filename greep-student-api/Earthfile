@@ -114,6 +114,9 @@ deploy:
 	ARG JWT_SECRET
 	ARG EMAIL_USER
 	ARG EMAIL_PASSWORD
+	ARG CLOUDINARY_CLOUD_NAME
+	ARG CLOUDINARY_API_KEY
+	ARG CLOUDINARY_API_SECRET
 	ARG apptype='nodejs'
 	ARG service='service-name'
 	ARG version=""
@@ -164,7 +167,7 @@ deploy:
 	IF [ "$apptype" = "nodejs" ]
 		DO nodejs_kubernetes_engine+NODEJSAPP --CRD_KIND=$CRD_KIND --CRD_GROUP=$CRD_GROUP  --service=$service --version=$version --env=$envs --deploymentReplicas=1 --httpsDomain1=api-student-delivery.greep.io
 		DO nodejs_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs
-		DO nodejs_kubernetes_engine+SECRETS --service=$service  --env=$envs --JWT_SECRET=$JWT_SECRET --EMAIL_USER=$EMAIL_USER --EMAIL_PASSWORD=$EMAIL_PASSWORD
+		DO nodejs_kubernetes_engine+SECRETS --service=$service  --env=$envs --JWT_SECRET=$JWT_SECRET --EMAIL_USER=$EMAIL_USER --EMAIL_PASSWORD=$EMAIL_PASSWORD --CLOUDINARY_CLOUD_NAME=$CLOUDINARY_CLOUD_NAME --CLOUDINARY_API_KEY=$CLOUDINARY_API_KEY --CLOUDINARY_API_SECRET=$CLOUDINARY_API_SECRET
 	END
 
 	IF [ "$apptype" = "php" ]
