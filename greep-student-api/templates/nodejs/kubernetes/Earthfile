@@ -60,6 +60,9 @@ SECRETS:
     ARG JWT_SECRET=''
     ARG EMAIL_USER=''
     ARG EMAIL_PASSWORD=''
+    ARG CLOUDINARY_CLOUD_NAME=''
+    ARG CLOUDINARY_API_KEY=''
+    ARG CLOUDINARY_API_SECRET=''
     ARG dirExtra="./$service/environments/$env/extras-$service"
     ARG file="$dirExtra/secrets.yaml"
 	ARG OUTPUT="apiVersion: v1
@@ -73,6 +76,9 @@ stringData:
   JWT_SECRET: '${JWT_SECRET}'
   EMAIL_USER: '${EMAIL_USER}'
   EMAIL_PASSWORD: '${EMAIL_PASSWORD}'
+  CLOUDINARY_CLOUD_NAME: '${CLOUDINARY_CLOUD_NAME}'
+  CLOUDINARY_API_KEY: '${CLOUDINARY_API_KEY}'
+  CLOUDINARY_API_SECRET: '${CLOUDINARY_API_SECRET}
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"
