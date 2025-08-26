@@ -1,0 +1,67 @@
+VERSION 0.6
+
+LARAVELAPP:
+	COMMAND
+    ARG service='sample'
+    ARG env='prod'
+    ARG dir="./$service/environments/$env"
+    ARG file="$dir/app-template.yaml"
+    ARG version=0.1
+    ARG httpsDomain1=''
+    ARG deploymentReplicas=1
+    ARG CRD_KIND='CustomAppTemplate'
+	ARG CRD_GROUP='app.resourcegroup.io'
+    ARG OUTPUT="apiVersion: ${CRD_GROUP}/v1
+kind: ${CRD_KIND}
+metadata:
+  name: ${service}
+spec:
+  serviceName: '${service}'
+  environment: '${env}'
+  deploymentReplicas: ${deploymentReplicas}
+  imageVersion: '${version}'
+  httpsDomain1: '${httpsDomain1}'
+  letEncryptEmail: 'ayomide@ceedlab.co'
+  configsToUse: 'php-default,cert-manager-http,cert-manager-http/issuer-1,cron,redis,queue-workers,queue-workers-high'
+"
+	RUN mkdir -p $dir
+  RUN echo "$OUTPUT" > "$file"
+
+CONFIGMAP:
+	COMMAND
+    ARG service='sample'
+    ARG env='prod'
+    ARG dirExtra="./$service/environments/$env/extras-$service"
+    ARG file="$dirExtra/configmap.yaml"
+	ARG OUTPUT="apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${service}
+  namespace: ${env}-${service}
+data:
+  APP_NAME: 'App name'
+  APP_ENV: 'production'
+  APP_DEBUG: 'false'
+"
+	RUN mkdir -p $dirExtra
+  RUN echo "$OUTPUT" > "$file"
+
+SECRETS:
+	COMMAND
+    ARG service='sample'
+    ARG env='prod'
+    ARG dirExtra="./$service/environments/$env/extras-$service"
+    ARG file="$dirExtra/secrets.yaml"
+	ARG OUTPUT="apiVersion: v1
+kind: Secret
+metadata:
+  name: ${service}
+  namespace: ${env}-${service}
+type: Opaque
+stringData:
+  APP_KEY: ''
+  DB_USERNAME: ''
+  DB_PASSWORD: ''
+"
+	RUN mkdir -p $dirExtra
+  RUN echo "$OUTPUT" > "$file"
