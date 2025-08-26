@@ -72,7 +72,7 @@ metadata:
   namespace: ${env}-${service}
 type: Opaque
 stringData:
-  MONGODB_URI: 'mongodb://${service}-mongodb-0.${service}-mongodb-service.${env}-${service}:27017/default?replicaSet=rs0'
+  MONGODB_URI: 'mongodb://${service}-mongodb-service.${env}-${service}:27017/default?replicaSet=rs0'
   JWT_SECRET: '${JWT_SECRET}'
   EMAIL_USER: '${EMAIL_USER}'
   EMAIL_PASSWORD: '${EMAIL_PASSWORD}'
