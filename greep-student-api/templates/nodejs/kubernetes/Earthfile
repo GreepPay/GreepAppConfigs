@@ -75,6 +75,7 @@ stringData:
   MONGODB_URI: 'mongodb://${service}-mongodb-service.${env}-${service}:27017/default'
   JWT_SECRET: '${JWT_SECRET}'
   ZEPTO_MAIL_USER: '${EMAIL_USER}'
+  FROM_EMAIL: 'noreply@greep.io'
   ZEPTO_MAIL_PASSWORD: '${EMAIL_PASSWORD}'
   CLOUDINARY_CLOUD_NAME: '${CLOUDINARY_CLOUD_NAME}'
   CLOUDINARY_API_KEY: '${CLOUDINARY_API_KEY}'
