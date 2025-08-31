@@ -47,7 +47,7 @@ data:
   FRONTEND_URL: 'https://student-delivery.greep.io'
   MAX_REQUESTS_PER_HOUR: '1000'
   OTP_EXPIRY_MINUTES: '10'
-  JWT_EXPIRES_IN: '24h'
+  JWT_EXPIRES_IN: '7d'
   EMAIL_FROM_NAME: 'Greep Student Delivery'
 "
 	RUN mkdir -p $dirExtra
