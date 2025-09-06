@@ -48,7 +48,7 @@ data:
   APP_STATE: '${env}'
 
   # Update the LOG_CHANNEL to stdout for Kubernetes
-  LOG_CHANNEL: 'stdout'
+  LOG_CHANNEL: 'slack'
   LOG_LEVEL: 'debug'
   DB_CONNECTION: 'pgsql'
   DB_HOST: '$DB_HOST'
