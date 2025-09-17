@@ -1,7 +1,7 @@
 VERSION 0.6
 
 rocket-build:
-    FROM rust:1.85-slim
+    FROM rust:1.86-slim
 
     ARG service='sample'
 
@@ -37,7 +37,7 @@ rocket-build:
     SAVE ARTIFACT target/release AS LOCAL release
 
 rust-server:
-    FROM rust:1.85-slim
+    FROM rust:1.86-slim
 
     ARG version='0.1'
     ARG docker_registry='drayfocus/earthly-sample'
