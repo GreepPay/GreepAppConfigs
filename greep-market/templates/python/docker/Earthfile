@@ -1,0 +1,58 @@
+VERSION 0.6
+FROM bash:4.4
+WORKDIR /setup-arena
+
+python-server:
+	# We need an nginx container which can pass requests to our python container,
+	# as well as serve any static content.
+	FROM matthewfeickert/docker-python3-ubuntu:3.7.3
+
+	ARG version='0.1'
+	ARG docker_registry='drayfocus/earthly-sample'
+	ARG service='sample'
+
+	USER root
+
+	# Create app directory
+	WORKDIR /usr/src/app
+
+	## Then copy our app source code into the image
+	COPY  ./app .
+
+	RUN python --version
+
+	RUN sudo apt update
+
+	RUN python3 -m pip install --upgrade pip
+
+	# Install MySQL client 8.0
+	RUN apt-get install -y -q libmysqlclient-dev
+
+	RUN pip3 install six cython forexconnect timeout-decorator redis importlib-metadata==4.8 sqlalchemy SQLAlchemy-serializer mysql-connector-python mysqlclient flask-cors Flask requests watchdog beautifulsoup4 pytz
+
+	RUN pip3 install --no-cache-dir -r requirements.txt
+
+	RUN pip3 install urllib3==1.26.6
+
+	RUN pip3 install lxml waitress investpy schedule celery
+
+	EXPOSE 8080
+
+	# Install nginx
+	RUN apt-get update && \
+    apt-get install -y -q curl gnupg2
+
+	RUN curl http://nginx.org/keys/nginx_signing.key | apt-key add -
+
+	RUN apt-get update && \
+		apt-get install -y -q nginx
+
+	CMD ["nginx", "-g", "daemon off;"]
+
+	CMD ["python", "app/index.py"]
+
+	# We need to add our NGINX template to the container for startup,
+	# and configuration.
+	COPY ./conf/nginx.conf /etc/nginx/templates/default.conf.template
+
+	SAVE IMAGE --push ${docker_registry}/${service}_web_server:v${version}
