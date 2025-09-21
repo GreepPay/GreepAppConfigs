@@ -1,0 +1,85 @@
+VERSION 0.6
+
+NODEJSAPP:
+	COMMAND
+    ARG service='sample'
+    ARG env='prod'
+    ARG dir="./$service/environments/$env"
+    ARG file="$dir/app-template.yaml"
+	ARG version=0.1
+	ARG httpsDomain1=''
+	ARG CRD_KIND='CustomAppTemplate'
+	ARG CRD_GROUP='app.resourcegroup.io'
+	ARG OUTPUT="apiVersion: ${CRD_GROUP}/v1
+kind: ${CRD_KIND}
+metadata:
+  name: ${service}
+spec:
+  serviceName: '${service}'
+  environment: '${env}'
+  deploymentReplicas: 1
+  imageVersion: '${version}'
+  letEncryptEmail: 'drayfocus@gmail.com'
+  configsToUse: 'node-with-config,mongodb,cert-manager-http,cert-manager-http/issuer-lets-encrypt-1'
+  httpsDomain1: '${httpsDomain1}'
+"
+	RUN mkdir -p $dir
+    RUN echo "$OUTPUT" > "$file"
+
+
+CONFIGMAP:
+	COMMAND
+    ARG service='sample'
+    ARG env='prod'
+    ARG dirExtra="./$service/environments/$env/extras-$service"
+    ARG file="$dirExtra/configmap.yaml"
+	ARG OUTPUT="apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${service}
+  namespace: ${env}-${service}
+data:
+  APP_NAME: 'App name'
+  APP_ENV: 'production'
+  APP_DEBUG: 'false'
+  NODE_ENV: 'production'
+  PORT: '8080'
+  FRONTEND_URL: 'https://market.greep.io'
+  MAX_REQUESTS_PER_HOUR: '10000'
+  OTP_EXPIRY_MINUTES: '10'
+  JWT_EXPIRES_IN: '7d'
+  EMAIL_FROM_NAME: 'Greep Market'
+"
+	RUN mkdir -p $dirExtra
+  RUN echo "$OUTPUT" > "$file"
+
+SECRETS:
+	COMMAND
+    ARG service='sample'
+    ARG env='prod'
+    ARG JWT_SECRET=''
+    ARG EMAIL_USER=''
+    ARG EMAIL_PASSWORD=''
+    ARG CLOUDINARY_CLOUD_NAME=''
+    ARG CLOUDINARY_API_KEY=''
+    ARG CLOUDINARY_API_SECRET=''
+    ARG dirExtra="./$service/environments/$env/extras-$service"
+    ARG file="$dirExtra/secrets.yaml"
+	ARG OUTPUT="apiVersion: v1
+kind: Secret
+metadata:
+  name: ${service}
+  namespace: ${env}-${service}
+type: Opaque
+stringData:
+  MONGODB_URI: 'mongodb://${service}-mongodb-service.${env}-${service}:27017/default'
+  JWT_SECRET: '${JWT_SECRET}'
+  ZEPTO_MAIL_USER: '${EMAIL_USER}'
+  FROM_EMAIL: 'noreply@greep.io'
+  ZEPTO_MAIL_PASSWORD: '${EMAIL_PASSWORD}'
+  CLOUDINARY_CLOUD_NAME: '${CLOUDINARY_CLOUD_NAME}'
+  CLOUDINARY_API_KEY: '${CLOUDINARY_API_KEY}'
+  CLOUDINARY_API_SECRET: '${CLOUDINARY_API_SECRET}'
+"
+	RUN mkdir -p $dirExtra
+  RUN echo "$OUTPUT" > "$file"
