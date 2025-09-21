@@ -33,7 +33,7 @@ nodejs-server:
 	RUN npm run build
 
 	EXPOSE 8080
-	CMD [ "node", "/usr/src/app/dist/index.js" ]
+	CMD [ "npm", "run", "start" ]
 
 	# We need to add our NGINX template to the container for startup,
 	# and configuration.
