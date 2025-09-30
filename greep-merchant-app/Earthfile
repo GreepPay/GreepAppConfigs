@@ -72,7 +72,7 @@ setup:
 build:
 	ARG version='0.1'
 	ARG DOCKER_REGISTRY='drayfocus'
-	ARG service='greep-admin-web-app'
+	ARG service='greep-merchant-app'
 	ARG envs='dev,prod'
 	ARG node_env="production"
 	ARG apptype='nodejs'
@@ -118,7 +118,7 @@ deploy:
 	ARG CRD_KIND
 	ARG CRD_GROUP
 	ARG apptype='nodejs'
-	ARG service='greep-admin-web-app'
+	ARG service='greep-merchant-app'
 	ARG version=""
 
 	RUN mkdir -p ${service}/environments
