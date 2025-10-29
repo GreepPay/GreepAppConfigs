@@ -72,7 +72,7 @@ data:
   AUTH_API: 'http://greep-auth-webserver.${env}-greep-auth.svc.cluster.local:80'
 
   MEMCACHED_HOST: 'memcached'
-  REDIS_HOST:  'greep-user-api-redis.${env}-greep-user-api.svc.cluster.local'
+  REDIS_HOST:  'greep-websocket-redis.${env}-greep-websocket.svc.cluster.local'
   REDIS_PORT: '6379'
 "
 	RUN mkdir -p $dirExtra
