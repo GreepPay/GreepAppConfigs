@@ -55,6 +55,7 @@ data:
   WEBSOCKETS_STATISTICS_ENABLED: 'true'
 
   LOG_LEVEL: 'debug'
+  LOG_CHANNEL: 'stack'
   DB_CONNECTION: 'pgsql'
   DB_HOST: '$DB_HOST'
   DB_PORT: '5432'
