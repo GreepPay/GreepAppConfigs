@@ -54,8 +54,6 @@ data:
   PUSHER_APP_CLUSTER: 'mt1'
   WEBSOCKETS_STATISTICS_ENABLED: 'true'
 
-  # Update the LOG_CHANNEL to stdout for Kubernetes
-  LOG_CHANNEL: 'stdout'
   LOG_LEVEL: 'debug'
   DB_CONNECTION: 'pgsql'
   DB_HOST: '$DB_HOST'
