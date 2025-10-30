@@ -48,7 +48,7 @@ data:
 
   APP_URL: 'https://api-client-dev.greep.io'
   APP_STATE: '${env}'
-  PUSHER_HOST: 'greep-websocket-websocket.${env}-greep-websocket'
+  PUSHER_HOST: 'soketi-greep-soketi.soketi'
   PUSHER_PORT: '6001'
   PUSHER_SCHEME: 'http'
   PUSHER_APP_CLUSTER: 'mt1'
@@ -72,7 +72,7 @@ data:
   AUTH_API: 'http://greep-auth-webserver.${env}-greep-auth.svc.cluster.local:80'
 
   MEMCACHED_HOST: 'memcached'
-  REDIS_HOST:  'greep-websocket-redis.${env}-greep-websocket.svc.cluster.local'
+  REDIS_HOST:  'greep-user-api-redis.${env}-greep-user-api.svc.cluster.local'
   REDIS_PORT: '6379'
 "
 	RUN mkdir -p $dirExtra
