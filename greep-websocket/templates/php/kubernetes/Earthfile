@@ -48,15 +48,14 @@ data:
 
   APP_URL: 'https://api-client-dev.greep.io'
   APP_STATE: '${env}'
-  PUSHER_HOST: 'greep-websocket-websocket.${env}-greep-websocket'
+  PUSHER_HOST: 'soketi-greep-soketi.soketi'
   PUSHER_PORT: '6001'
   PUSHER_SCHEME: 'http'
   PUSHER_APP_CLUSTER: 'mt1'
   WEBSOCKETS_STATISTICS_ENABLED: 'true'
 
-  # Update the LOG_CHANNEL to stdout for Kubernetes
-  LOG_CHANNEL: 'stdout'
   LOG_LEVEL: 'debug'
+  LOG_CHANNEL: 'stack'
   DB_CONNECTION: 'pgsql'
   DB_HOST: '$DB_HOST'
   DB_PORT: '5432'
