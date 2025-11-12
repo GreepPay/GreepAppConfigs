@@ -31,6 +31,8 @@ CONFIGMAP:
 	COMMAND
     ARG service='sample'
     ARG env='prod'
+    ARG API_BASE_URL
+    ARG APP_BASE_URL
     ARG dirExtra="./$service/environments/$env/extras-$service"
     ARG file="$dirExtra/configmap.yaml"
 	ARG OUTPUT="apiVersion: v1
@@ -42,6 +44,8 @@ data:
   APP_NAME: 'App name'
   APP_ENV: 'production'
   APP_DEBUG: 'false'
+  API_BASE_URL
+  APP_BASE_URL
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"
