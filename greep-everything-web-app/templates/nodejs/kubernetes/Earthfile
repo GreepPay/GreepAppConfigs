@@ -44,8 +44,8 @@ data:
   APP_NAME: 'App name'
   APP_ENV: 'production'
   APP_DEBUG: 'false'
-  API_BASE_URL
-  APP_BASE_URL
+  API_BASE_URL:'$API_BASE_URL'
+  APP_BASE_URL:'$APP_BASE_URL'
 "
 	RUN mkdir -p $dirExtra
   RUN echo "$OUTPUT" > "$file"
