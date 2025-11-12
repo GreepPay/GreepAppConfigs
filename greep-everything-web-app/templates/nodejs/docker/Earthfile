@@ -3,7 +3,7 @@ FROM bash:4.4
 WORKDIR /setup-arena
 
 node-js-base:
-	FROM node:18.16.0-alpine
+	FROM node:22.19.0-alpine
 
 	SAVE ARTIFACT  /usr /usr
 
