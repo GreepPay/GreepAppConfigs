@@ -20,6 +20,9 @@ nodejs-server:
 	ARG docker_registry='drayfocus/earthly-sample'
 	ARG service='sample'
 
+	# Install yarn
+	RUN npm install -g yarn
+
 	# Create app directory
 	WORKDIR /usr/src/app
 
