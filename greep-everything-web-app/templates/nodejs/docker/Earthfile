@@ -5,11 +5,6 @@ WORKDIR /setup-arena
 node-js-base:
 	FROM node:22.19.0-alpine
 
-	# Add yarn
-	RUN apk add --no-cache curl && \
-	    curl -o- -L https://yarnpkg.com/install.sh | sh && \
-	    ln -s /root/.yarn/bin/yarn /usr/local/bin/yarn
-
 	SAVE ARTIFACT  /usr /usr
 
 nodejs-server:
@@ -35,7 +30,7 @@ nodejs-server:
 	RUN cd logic && npm install && cd ..
 
 	# install packages for uicomponents
-	RUN cd uicomponents && yarn install && cd ..
+	RUN cd uicomponents && npm install && cd ..
 
 	# build app
 	RUN cd app && npm install && npm run build && cd ..
