@@ -169,8 +169,8 @@ deploy:
 
 		END
 		
-		DO nodejs_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs
-		DO nodejs_kubernetes_engine+SECRETS --service=$service  --env=$envs  --API_BASE_URL=$API_BASE_URL  --APP_BASE_URL=$APP_BASE_URL
+		DO nodejs_kubernetes_engine+CONFIGMAP --service=$service  --env=$envs --API_BASE_URL=$API_BASE_URL  --APP_BASE_URL=$APP_BASE_URL
+		DO nodejs_kubernetes_engine+SECRETS --service=$service  --env=$envs  
 	END
 
 	IF [ "$apptype" = "php" ]
