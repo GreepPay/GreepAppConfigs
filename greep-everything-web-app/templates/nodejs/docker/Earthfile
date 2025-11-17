@@ -30,7 +30,7 @@ nodejs-server:
 	# RUN cd logic && npm install && cd ..
 
 	# install packages for uicomponents
-	RUN cd uicomponents && npm install && cd ..
+	# RUN cd uicomponents && npm install && cd ..
 
 	# # build app
 	# RUN cd app && npm install && npm run build && cd ..
