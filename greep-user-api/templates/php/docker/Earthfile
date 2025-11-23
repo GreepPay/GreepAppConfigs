@@ -32,10 +32,10 @@ composer-base:
 		&& apk del build-dependencies
 
 	# #  Install Imagick for PDF to Image coversion
-	RUN wget https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions
-	RUN mv install-php-extensions /usr/local/bin/
-	RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
-    install-php-extensions imagick
+	# RUN wget https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions
+	# RUN mv install-php-extensions /usr/local/bin/
+	# RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
+    # install-php-extensions imagick
 
 
 	# Install ghostscript
@@ -156,10 +156,10 @@ cli:
 
 
 	# #  Install Imagick for PDF to Image coversion
-	RUN wget https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions
-	RUN mv install-php-extensions /usr/local/bin/
-	RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
-    install-php-extensions imagick
+	# RUN wget https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions
+	# RUN mv install-php-extensions /usr/local/bin/
+	# RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
+    # install-php-extensions imagick
 
 
 
@@ -225,10 +225,10 @@ fpm-server:
 
 
 	# #  Install Imagick for PDF to Image coversion
-	RUN wget https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions
-	RUN mv install-php-extensions /usr/local/bin/
-	RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
-    install-php-extensions imagick
+	# RUN wget https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions
+	# RUN mv install-php-extensions /usr/local/bin/
+	# RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
+    # install-php-extensions imagick
 
 
     # Install PostgreSQL dependencies and PHP extensions
